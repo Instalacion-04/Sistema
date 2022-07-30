@@ -155,6 +155,7 @@
                 ><div v-if="props.item.condicion">
                   <span class="indigo--text">Activo</span>
                 </div>
+                
                 <div v-else>
                   <span class="red--text">Inactivo</span>
                 </div></v-chip

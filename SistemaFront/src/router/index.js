@@ -5,6 +5,8 @@ import Categoria_Component from '../components/Categoria.vue'
 import Articulos_Component from '../components/Articulos.vue'
 import Rol_Component from '../components/Rol.vue'
 import Usuarios_Component from '../components/Usuario.vue'
+import Cliente_Component from '../components/Cliente.vue'
+import Proveedor_Componet from '../components/Proveedor.vue'
 
 Vue.use(VueRouter)
 
@@ -33,6 +35,16 @@ const routes = [
     path: '/usuarios',
     name: 'usuarios',
     component: Usuarios_Component
+  },
+  {
+    path: '/clientes',
+    name: 'clientes',
+    component: Cliente_Component
+  },
+  {
+    path: '/proveedores',
+    name: 'proveedores',
+    component: Proveedor_Componet
   },
   {
     path: '/about',

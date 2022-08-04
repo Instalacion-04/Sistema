@@ -280,6 +280,7 @@ export default {
       this.id = "";
       this.idcategoria="";
       this.codigo="";
+      this.nombre="";
       this.stock="";
       this.precio_venta="";
       this.descripcion = "";

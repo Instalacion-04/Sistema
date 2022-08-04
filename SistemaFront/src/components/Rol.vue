@@ -46,8 +46,8 @@ export default {
     roles: [],
     Tabla_Encabezados: [
       { text: "Nombre", value: "nombre" },
-      { text: "Descripción", value: "descripcion", sortable: false },
-      { text: "Estado", value: "condicion", sortable: false },
+      { text: "Descripción", value: "descripcion", sortable: false }
+      
     ],
     buscar: '',
     

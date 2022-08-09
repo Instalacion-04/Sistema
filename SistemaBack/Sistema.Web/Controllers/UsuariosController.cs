@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Sistema.Datos;
 using Sistema.Entidades.Usuarios;
 using Sistema.Web.Models.Usuarios.Usuario;
@@ -16,13 +21,15 @@ namespace Sistema.Web.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly DbContextSistema _context;
+        private readonly IConfiguration _config;
 
-        public UsuariosController(DbContextSistema context)
+        public UsuariosController(DbContextSistema context, IConfiguration config)
         {
             _context = context;
+            _config = config;
         }
 
-         // GET: api/Usuarios/Listar
+        // GET: api/Usuarios/Listar
         [HttpGet("[action]")]
         public async Task<IEnumerable<UsuarioViewModel>> Listar()
         {
@@ -44,8 +51,8 @@ namespace Sistema.Web.Controllers
             });
 
         }
-       
-         // POST: api/Usuarios/Crear
+
+        // POST: api/Usuarios/Crear
         [HttpPost("[action]")]
         public async Task<IActionResult> Crear([FromBody] CrearViewModel model)
         {
@@ -53,7 +60,7 @@ namespace Sistema.Web.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             var email = model.email.ToLower();
 
             if (await _context.Usuarios.AnyAsync(u => u.email == email))
@@ -61,12 +68,12 @@ namespace Sistema.Web.Controllers
                 return BadRequest("El email ya existe");
             }
 
-            CrearPasswordHash(model.password,out byte[] passwordHash,out byte[] passwordSalt);
+            CrearPasswordHash(model.password, out byte[] passwordHash, out byte[] passwordSalt);
 
             Usuario usuario = new Usuario
             {
-                idrol=model.idrol,
-                nombre=model.nombre,
+                idrol = model.idrol,
+                nombre = model.nombre,
                 tipo_documento = model.tipo_documento,
                 num_documento = model.num_documento,
                 direccion = model.direccion,
@@ -90,8 +97,8 @@ namespace Sistema.Web.Controllers
             return Ok();
         }
 
-          /*********Actualizar*************/    
-         // PUT: api/Usuarios/Actualizar
+        /*********Actualizar*************/
+        // PUT: api/Usuarios/Actualizar
         [HttpPut("[action]")]
         public async Task<IActionResult> Actualizar([FromBody] ActualizarViewModel model)
         {
@@ -119,13 +126,13 @@ namespace Sistema.Web.Controllers
             usuario.telefono = model.telefono;
             usuario.email = model.email.ToLower();
 
-            if(model.act_password == true)
+            if (model.act_password == true)
             {
-                CrearPasswordHash(model.password,out byte[] passwordHash,out byte[] passwordSalt);
+                CrearPasswordHash(model.password, out byte[] passwordHash, out byte[] passwordSalt);
                 usuario.password_hash = passwordHash;
                 usuario.password_salt = passwordSalt;
             }
-            
+
 
             try
             {
@@ -140,7 +147,7 @@ namespace Sistema.Web.Controllers
             return Ok();
         }
 
-          private void CrearPasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private void CrearPasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
             {
@@ -150,8 +157,8 @@ namespace Sistema.Web.Controllers
 
         }
 
-           /*********Desactivar*************/ 
-         // PUT: api/Usuarios/Desactivar/1
+        /*********Desactivar*************/
+        // PUT: api/Usuarios/Desactivar/1
         [HttpPut("[action]/{id}")]
         public async Task<IActionResult> Desactivar([FromRoute] int id)
         {
@@ -183,13 +190,13 @@ namespace Sistema.Web.Controllers
             return Ok();
         }
 
-          /*********Activar*************/ 
+        /*********Activar*************/
         // PUT: api/Usuarios/Activar/1
         [HttpPut("[action]/{id}")]
         public async Task<IActionResult> Activar([FromRoute] int id)
         {
-            
-             if (id <= 0)
+
+            if (id <= 0)
             {
                 return BadRequest();
             }
@@ -214,8 +221,73 @@ namespace Sistema.Web.Controllers
             }
 
             return Ok();
-           
+
         }
+
+
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            var email = model.email.ToLower();  //Variable que recibe el email
+
+            //Begin Verificacion si el email existe
+            var usuario = await _context.Usuarios.Where(u => u.condicion == true).Include(u => u.rol).FirstOrDefaultAsync(u => u.email == email);
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+            // End Verificacion
+
+            if (!VerificarPasswordHash(model.password, usuario.password_hash, usuario.password_salt))
+            {
+                return NotFound();
+            }
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, usuario.idusuario.ToString()),
+                new Claim(ClaimTypes.Email, email),
+                new Claim(ClaimTypes.Role, usuario.rol.nombre ),
+                new Claim("idusuario", usuario.idusuario.ToString() ),
+                new Claim("rol", usuario.rol.nombre ),
+                new Claim("nombre", usuario.nombre )
+            };
+
+            return Ok(
+                    new { token = GenerarToken(claims) }
+                );
+        }
+
+
+        //La variable password recibe desde el form los datos y se verifica si el password ingresado coincide con el almacenado
+        // y devueve un true y reencripta el password de nuevo y lo guarda en una variable passwordHashNuevo
+        private bool VerificarPasswordHash(string password, byte[] passwordHashAlmacenado, byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
+            {
+                var passwordHashNuevo = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return new ReadOnlySpan<byte>(passwordHashAlmacenado).SequenceEqual(new ReadOnlySpan<byte>(passwordHashNuevo));
+            }
+        }
+
+        private string GenerarToken(List<Claim> claims)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+              _config["Jwt:Issuer"],
+              _config["Jwt:Issuer"],
+              expires: DateTime.Now.AddMinutes(30),
+              signingCredentials: creds,
+              claims: claims);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+
 
         private bool UsuarioExists(int id)
         {

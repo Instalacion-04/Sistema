@@ -1,30 +1,22 @@
 <template>
   <v-app id="inspire">
-    <v-app-bar
-      :clipped-left="$vuetify.breakpoint.lgAndUp"
-      color="blue darken-3"
-      dark
-      app
-      fixed
-    >
+    <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dark app fixed>
       <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <span class="hidden-sm-and-down">Sistema</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon>
-        <v-icon>apps</v-icon>
+      <v-btn @click="salir" v-if="logueado" icon>
+        <v-icon>logout</v-icon>Salir
+      </v-btn>
+      <v-btn :to="{name:'login'}" v-else>
+        <v-icon>token</v-icon>
       </v-btn>
     </v-app-bar>
 
-    <v-navigation-drawer
-      :clipped="$vuetify.breakpoint.lgAndUp"
-      v-model="drawer"
-      fixed
-      app
-    >
+    <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="drawer" fixed app v-if="logueado">
       <v-list dense>
-        <template>
+        <template v-if="esAdministrador || esAlmacenero || esVendedor">
           <v-list-item :to="{ name: 'home' }">
             <v-list-item-action>
               <v-icon>home</v-icon>
@@ -33,7 +25,7 @@
           </v-list-item>
         </template>
 
-        <template>
+        <template v-if="esAdministrador || esAlmacenero">
           <v-list-group>
             <v-list-item slot="activator">
               <v-list-item-content>
@@ -61,7 +53,7 @@
           </v-list-group>
         </template>
 
-        <template>
+        <template v-if="esAdministrador || esAlmacenero">
           <v-list-group>
             <v-list-item slot="activator">
               <v-list-item-content>
@@ -89,7 +81,7 @@
           </v-list-group>
         </template>
 
-        <template>
+        <template v-if="esAdministrador || esVendedor">
           <v-list-group>
             <v-list-item slot="activator">
               <v-list-item-content>
@@ -117,7 +109,7 @@
           </v-list-group>
         </template>
 
-        <template>
+        <template v-if="esAdministrador">
           <v-list-group>
             <v-list-item slot="activator">
               <v-list-item-content>
@@ -145,7 +137,7 @@
           </v-list-group>
         </template>
 
-        <template>
+        <template v-if="esAdministrador">
           <v-list-group>
             <v-list-item slot="activator">
               <v-list-item-content>
@@ -195,5 +187,44 @@ export default {
   data: () => ({
     drawer: null,
   }),
+  computed: {
+
+    logueado() {
+      return this.$store.state.usuario;
+
+    },
+
+    esAdministrador() {
+      return this.$store.state.usuario && this.$store.state.usuario.rol == 'Administrador';
+
+    },
+    esAlmacenero() {
+      return this.$store.state.usuario && this.$store.state.usuario.rol == 'Almacenero';
+
+    },
+    esVendedor() {
+      return this.$store.state.usuario && this.$store.state.usuario.rol == 'Vendedor';
+
+    }
+
+  },
+  created() {
+    this.$store.dispatch("autoLogin");
+
+
+  },
+  methods:{
+    salir(){
+      this.$store.dispatch("salir")
+    }
+  }
+
+
+
+
+
+
+
+
 };
 </script>

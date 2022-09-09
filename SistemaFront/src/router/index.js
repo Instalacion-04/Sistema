@@ -7,6 +7,8 @@ import Rol_Component from '../components/Rol.vue'
 import Usuarios_Component from '../components/Usuario.vue'
 import Cliente_Component from '../components/Cliente.vue'
 import Proveedor_Componet from '../components/Proveedor.vue'
+import Login_Component from '../components/Login.vue'
+import store from '../store'
 
 Vue.use(VueRouter)
 
@@ -14,37 +16,73 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
+    meta :{
+      administrador : true,
+      almacenero : true,
+      vendedor : true
+    }
   },
   {
     path: '/categorias',
     name: 'categorias',
-    component: Categoria_Component
+    component: Categoria_Component,
+    meta :{
+      administrador : true,
+      almacenero : true,
+    }
   },
   {
     path: '/articulos',
     name: 'articulos',
-    component: Articulos_Component
+    component: Articulos_Component,
+    meta :{
+      administrador : true,
+      almacenero : true,
+    }
   },
   {
     path: '/roles',
     name: 'roles',
-    component: Rol_Component
+    component: Rol_Component,
+    meta :{
+      administrador : true,
+    }
   },
   {
     path: '/usuarios',
     name: 'usuarios',
-    component: Usuarios_Component
+    component: Usuarios_Component,
+    meta :{
+      administrador : true,
+    }
   },
   {
     path: '/clientes',
     name: 'clientes',
-    component: Cliente_Component
+    component: Cliente_Component,
+    meta :{
+      administrador : true,
+      vendedor : true
+    }
   },
   {
     path: '/proveedores',
     name: 'proveedores',
-    component: Proveedor_Componet
+    component: Proveedor_Componet,
+    meta :{
+      administrador : true,
+      almacenero : true,
+      
+    }
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login_Component,
+    meta :{
+      libre: true
+    }
   },
   {
     path: '/about',
@@ -62,4 +100,25 @@ const router = new VueRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+if(to.matched.some(record => record.meta.libre)){
+  next()
+} else if (store.state.usuario && store.state.usuario.rol=='Administrador'){
+  if(to.matched.some(record => record.meta.administrador)){
+    next()
+  }
+}else if (store.state.usuario && store.state.usuario.rol=='Almacenero'){
+  if(to.matched.some(record => record.meta.almacenero)){
+    next()
+  }
+}else if (store.state.usuario && store.state.usuario.rol=='Vendedor'){
+  if(to.matched.some(record => record.meta.vendedor)){
+    next()
+  }
+}else{
+  next({
+    name: 'login'
+  })
+}
+})
 export default router

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using Sistema.Web.Models.Almacen.Articulos;
 
 namespace Sistema.Web.Controllers
 {
+    [Authorize(Roles = "Almacenero,Administrador")]
     [Route("api/[controller]")]
     [ApiController]
     public class ArticulosController : ControllerBase
@@ -21,44 +23,47 @@ namespace Sistema.Web.Controllers
         {
             _context = context;
         }
-           
-            /******Listar*******/    
-           // GET: api/Articulos/Listar
+
+        /******Listar*******/
+        // GET: api/Articulos/Listar
+        [Authorize(Roles = "Almacenero,Administrador")]
         [HttpGet("[action]")]
-        public async Task <IEnumerable<ArticuloViewModel>> Listar()
+        public async Task<IEnumerable<ArticuloViewModel>> Listar()
         {
             var articulo = await _context.Articulos.Include(a => a.categoria).ToListAsync();
 
             return articulo.Select(a => new ArticuloViewModel
             {
-                idarticulo= a.idarticulo,
+                idarticulo = a.idarticulo,
                 idcategoria = a.idcategoria,
-                categoria= a.categoria.nombre,
-                codigo=a.codigo,
+                categoria = a.categoria.nombre,
+                codigo = a.codigo,
                 nombre = a.nombre,
-                stock=a.stock,
-                precio_venta=a.precio_venta,
+                stock = a.stock,
+                precio_venta = a.precio_venta,
                 descripcion = a.descripcion,
                 condicion = a.condicion
             });
 
         }
-          
-               /*********Mostrar por ID*************/    
-         // GET: api/Articulos/Mostrar/1
+
+        /*********Mostrar por ID*************/
+        // GET: api/Articulos/Mostrar/1
+        [Authorize(Roles = "Almacenero,Administrador")]
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> Mostrar([FromRoute] int id)
         {
 
             var articulo = await _context.Articulos.Include(a => a.categoria).
-            SingleOrDefaultAsync(a=>a.idarticulo==id);
+            SingleOrDefaultAsync(a => a.idarticulo == id);
 
             if (articulo == null)
             {
                 return NotFound();
             }
 
-            return Ok(new ArticuloViewModel {
+            return Ok(new ArticuloViewModel
+            {
 
                 idarticulo = articulo.idarticulo,
                 idcategoria = articulo.idcategoria,
@@ -72,8 +77,9 @@ namespace Sistema.Web.Controllers
             });
         }
 
-         /*********Actualizar*************/    
-         // PUT: api/Articulos/Actualizar
+        /*********Actualizar*************/
+        // PUT: api/Articulos/Actualizar
+        [Authorize(Roles = "Almacenero,Administrador")]
         [HttpPut("[action]")]
         public async Task<IActionResult> Actualizar([FromBody] ActualizarViewModel model)
         {
@@ -113,9 +119,10 @@ namespace Sistema.Web.Controllers
 
             return Ok();
         }
-       
-         /*********Crear*************/  
-         // POST: api/Articulos/Crear
+
+        /*********Crear*************/
+        // POST: api/Articulos/Crear
+        [Authorize(Roles = "Almacenero,Administrador")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Crear([FromBody] CrearViewModel model)
         {
@@ -126,7 +133,7 @@ namespace Sistema.Web.Controllers
 
             Articulo articulo = new Articulo
             {
-              
+
                 idcategoria = model.idcategoria,
                 codigo = model.codigo,
                 nombre = model.nombre,
@@ -150,8 +157,9 @@ namespace Sistema.Web.Controllers
             return Ok();
         }
 
-           /*********Desactivar*************/ 
-         // PUT: api/Articulos/Desactivar/1
+        /*********Desactivar*************/
+        // PUT: api/Articulos/Desactivar/1
+        [Authorize(Roles = "Almacenero,Administrador")]
         [HttpPut("[action]/{id}")]
         public async Task<IActionResult> Desactivar([FromRoute] int id)
         {
@@ -183,13 +191,14 @@ namespace Sistema.Web.Controllers
             return Ok();
         }
 
-          /*********Activar*************/ 
+        /*********Activar*************/
         // PUT: api/Articulos/Activar/1
+        [Authorize(Roles = "Almacenero,Administrador")]
         [HttpPut("[action]/{id}")]
         public async Task<IActionResult> Activar([FromRoute] int id)
         {
-            
-             if (id <= 0)
+
+            if (id <= 0)
             {
                 return BadRequest();
             }
@@ -214,7 +223,7 @@ namespace Sistema.Web.Controllers
             }
 
             return Ok();
-           
+
         }
 
         private bool ArticuloExists(int id)

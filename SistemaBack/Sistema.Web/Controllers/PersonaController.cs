@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,8 @@ namespace Sistema.Web.Controllers
             _context = context;
         }
 
-          // GET: api/Personas/ListarClientes
+        // GET: api/Personas/ListarClientes
+        [Authorize(Roles = "Vendedor,Administrador")]
         [HttpGet("[action]")]
         public async Task<IEnumerable<PersonaViewModel>> ListarClientes()
         {
@@ -38,12 +40,13 @@ namespace Sistema.Web.Controllers
                 direccion = p.direccion,
                 telefono = p.telefono,
                 email = p.email,
-               
+
             });
 
         }
 
-         // GET: api/Personas/ListarProveedores
+        // GET: api/Personas/ListarProveedores
+        [Authorize(Roles = "Almacenero,Administrador")]
         [HttpGet("[action]")]
         public async Task<IEnumerable<PersonaViewModel>> ListarProveedores()
         {
@@ -59,13 +62,14 @@ namespace Sistema.Web.Controllers
                 direccion = p.direccion,
                 telefono = p.telefono,
                 email = p.email,
-               
+
             });
 
         }
 
 
-         // POST: api/Persona/Crear
+        // POST: api/Persona/Crear
+        [Authorize(Roles = "Almacenero,Administrador,Vendedor")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Crear([FromBody] CrearViewModel model)
         {
@@ -73,7 +77,7 @@ namespace Sistema.Web.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             var email = model.email.ToLower();
 
             if (await _context.Personas.AnyAsync(p => p.email == email))
@@ -81,18 +85,18 @@ namespace Sistema.Web.Controllers
                 return BadRequest("El email ya existe");
             }
 
-          
+
 
             Persona persona = new Persona
             {
                 tipo_persona = model.tipo_persona,
-                nombre=model.nombre,
+                nombre = model.nombre,
                 tipo_documento = model.tipo_documento,
                 num_documento = model.num_documento,
                 direccion = model.direccion,
                 telefono = model.telefono,
                 email = model.email.ToLower(),
-             
+
             };
 
             _context.Personas.Add(persona);
@@ -108,8 +112,9 @@ namespace Sistema.Web.Controllers
             return Ok();
         }
 
-            /*********Actualizar*************/    
-         // PUT: api/Personas/Actualizar
+        /*********Actualizar*************/
+        // PUT: api/Personas/Actualizar
+        [Authorize(Roles = "Almacenero,Administrador,Vendedor")]
         [HttpPut("[action]")]
         public async Task<IActionResult> Actualizar([FromBody] ActualizarViewModel model)
         {
@@ -137,8 +142,8 @@ namespace Sistema.Web.Controllers
             persona.telefono = model.telefono;
             persona.email = model.email.ToLower();
 
-            
-            
+
+
 
             try
             {

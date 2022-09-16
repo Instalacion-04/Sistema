@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using Sistema.Web.Models.Usuarios.Rol;
 
 namespace Sistema.Web.Controllers
 {
+    [Authorize(Roles = "Almacenero")]
     [Route("api/[controller]")]
     [ApiController]
     public class RolesController : ControllerBase
@@ -22,10 +24,10 @@ namespace Sistema.Web.Controllers
             _context = context;
         }
 
-            /*********Listar*************/        
-         // GET: api/Roles/Listar
+        /*********Listar*************/
+        // GET: api/Roles/Listar
         [HttpGet("[action]")]
-        public async Task <IEnumerable<RolViewModel>> Listar()
+        public async Task<IEnumerable<RolViewModel>> Listar()
         {
             var rol = await _context.Roles.ToListAsync();
 
@@ -44,7 +46,7 @@ namespace Sistema.Web.Controllers
         [HttpGet("[action]")]
         public async Task<IEnumerable<SelectViewModel>> Select()
         {
-            var rol = await _context.Roles.Where(r => r.condicion==true).ToListAsync();
+            var rol = await _context.Roles.Where(r => r.condicion == true).ToListAsync();
 
             return rol.Select(r => new SelectViewModel
             {
@@ -54,7 +56,7 @@ namespace Sistema.Web.Controllers
 
         }
 
-     
+
         private bool RolExists(int id)
         {
             return _context.Roles.Any(e => e.idrol == id);

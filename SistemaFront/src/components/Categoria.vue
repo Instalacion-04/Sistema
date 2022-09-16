@@ -181,8 +181,10 @@ export default {
   methods: {
     listar() {
       let me = this;
+      let header = {"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
       axios
-        .get("api/Categorias/Listar")
+        .get("api/Categorias/Listar",configuracion)
         .then(function (response) {
           //console.log(response);
           me.categorias = response.data;
@@ -213,6 +215,8 @@ export default {
       if (this.ValidarForm()) {
         return;
       }
+      let header={"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
       if (this.editedIndex > -1) {
         //Codigo para editar
         let guardar = this;
@@ -221,7 +225,7 @@ export default {
             idcategoria: guardar.id,
             nombre: guardar.nombre,
             descripcion: guardar.descripcion,
-          })
+          },configuracion)
           .then(function (response) {
             guardar.LimpiarForm();
             guardar.listar();
@@ -237,7 +241,7 @@ export default {
           .post("api/Categorias/Crear", {
             nombre: guardar.nombre,
             descripcion: guardar.descripcion,
-          })
+          },configuracion)
           .then(function (response) {
             guardar.LimpiarForm();
             guardar.listar();
@@ -281,9 +285,11 @@ export default {
     },
     activar(){
       let guardar = this;
+      let header={"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
         axios
           .put("api/Categorias/Activar/"+ this.adId, {            
-          })
+          },configuracion)
           .then(function (response) {
           guardar.adModal=0;
           guardar.adAccion=0;
@@ -297,16 +303,18 @@ export default {
     },
     desactivar(){
       let guardar = this;
+      let header={"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
         axios
           .put("api/Categorias/Desactivar/"+ this.adId, {            
-          })
+          },configuracion)
           .then(function (response) {
           guardar.adModal=0;
           guardar.adAccion=0;
           guardar.adNombre="";
           guardar.adId="";
           guardar.listar();
-          })
+          },configuracion)
           .catch(function (error) {
             console.log(error);
           });

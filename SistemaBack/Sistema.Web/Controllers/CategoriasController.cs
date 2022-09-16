@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using Sistema.Web.Models.Almacen.Categoria;
 
 namespace Sistema.Web.Controllers
 {
+    [Authorize(Roles = "Almacenero,Administrador")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriasController : ControllerBase
@@ -21,10 +23,10 @@ namespace Sistema.Web.Controllers
         {
             _context = context;
         }
-            /*********Listar*************/        
-         // GET: api/Categorias/Listar
+        /*********Listar*************/
+        // GET: api/Categorias/Listar
         [HttpGet("[action]")]
-        public async Task <IEnumerable<CategoriaViewModel>> Listar()
+        public async Task<IEnumerable<CategoriaViewModel>> Listar()
         {
             var categoria = await _context.Categorias.ToListAsync();
 
@@ -43,7 +45,7 @@ namespace Sistema.Web.Controllers
         [HttpGet("[action]")]
         public async Task<IEnumerable<SelectViewModel>> Select()
         {
-            var categoria = await _context.Categorias.Where(c=>c.condicion==true).ToListAsync();
+            var categoria = await _context.Categorias.Where(c => c.condicion == true).ToListAsync();
 
             return categoria.Select(c => new SelectViewModel
             {
@@ -53,8 +55,8 @@ namespace Sistema.Web.Controllers
 
         }
 
-             /*********Mostrar por ID*************/    
-         // GET: api/Categorias/Mostrar/1
+        /*********Mostrar por ID*************/
+        // GET: api/Categorias/Mostrar/1
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> Mostrar([FromRoute] int id)
         {
@@ -66,15 +68,16 @@ namespace Sistema.Web.Controllers
                 return NotFound();
             }
 
-            return Ok(new CategoriaViewModel {
+            return Ok(new CategoriaViewModel
+            {
                 idcategoria = categoria.idcategoria,
                 nombre = categoria.nombre,
                 descripcion = categoria.descripcion,
                 condicion = categoria.condicion
             });
         }
-        
-         /*********Actualizar*************/    
+
+        /*********Actualizar*************/
         // PUT: api/Categorias/Actualizar
         [HttpPut("[action]")]
         public async Task<IActionResult> Actualizar([FromBody] ActualizarViewModel model)
@@ -112,9 +115,9 @@ namespace Sistema.Web.Controllers
             return Ok();
         }
 
-         /*********Crear*************/  
+        /*********Crear*************/
 
-         // POST: api/Categorias/Crear
+        // POST: api/Categorias/Crear
         [HttpPost("[action]")]
         public async Task<IActionResult> Crear([FromBody] CrearViewModel model)
         {
@@ -143,9 +146,9 @@ namespace Sistema.Web.Controllers
             return Ok();
         }
 
-          /*********Eliminar*************/ 
+        /*********Eliminar*************/
 
-         // DELETE: api/Categorias/Eliminar/1
+        // DELETE: api/Categorias/Eliminar/1
         [HttpDelete("[action]/{id}")]
         public async Task<IActionResult> Eliminar([FromRoute] int id)
         {
@@ -168,14 +171,14 @@ namespace Sistema.Web.Controllers
             catch (Exception)
             {
                 return BadRequest();
-            }           
+            }
 
             return Ok(categoria);
         }
 
 
-          /*********Desactivar*************/ 
-         // PUT: api/Categorias/Desactivar/1
+        /*********Desactivar*************/
+        // PUT: api/Categorias/Desactivar/1
         [HttpPut("[action]/{id}")]
         public async Task<IActionResult> Desactivar([FromRoute] int id)
         {
@@ -207,7 +210,7 @@ namespace Sistema.Web.Controllers
             return Ok();
         }
 
-          /*********Activar*************/ 
+        /*********Activar*************/
         // PUT: api/Categorias/Activar/1
         [HttpPut("[action]/{id}")]
         public async Task<IActionResult> Activar([FromRoute] int id)
@@ -245,6 +248,6 @@ namespace Sistema.Web.Controllers
             return _context.Categorias.Any(e => e.idcategoria == id);
         }
 
-        
+
     }
 }

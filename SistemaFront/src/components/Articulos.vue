@@ -235,8 +235,10 @@ export default {
   methods: {
     listar() {
       let me = this;
+      let header = {"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
       axios
-        .get("api/Articulos/Listar")
+        .get("api/Articulos/Listar",configuracion)
         .then(function (response) {
           //console.log(response);
           me.articulos = response.data;
@@ -247,9 +249,11 @@ export default {
     }, 
     Select() {
       let me = this;
+      let header = {"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
       var CategoriasArray=[];
       axios
-        .get("api/Categorias/Select").then(function (response) {
+        .get("api/Categorias/Select",configuracion).then(function (response) {
           CategoriasArray=response.data;
           CategoriasArray.map(function(x){
               me.categorias.push({text: x.nombre, value:x.idcategoria});
@@ -293,6 +297,8 @@ export default {
       if (this.editedIndex > -1) {
         //Codigo para editar
         let guardar = this;
+        let header = {"Authorization" : "Bearer " + this.$store.state.token};
+        let configuracion= {headers : header};
         axios
           .put("api/Articulos/Actualizar", {
             'idarticulo':guardar.id,
@@ -302,7 +308,7 @@ export default {
             'stock':guardar.stock,
             'precio_venta':guardar.precio_venta,
             'descripcion': guardar.descripcion
-          })
+          },configuracion)
           .then(function (response) {
             guardar.LimpiarForm();
             guardar.listar();
@@ -314,6 +320,8 @@ export default {
       } else {
         //codigo guaradr
         let guardar = this;
+        let header = {"Authorization" : "Bearer " + this.$store.state.token};
+        let configuracion= {headers : header};
         axios
           .post("api/Articulos/Crear", {
             'idcategoria':guardar.idcategoria,
@@ -322,7 +330,7 @@ export default {
             'stock':guardar.stock,
             'precio_venta':guardar.precio_venta,
             'descripcion': guardar.descripcion
-          })
+          },configuracion)
           .then(function (response) {
             guardar.LimpiarForm();
             guardar.listar();
@@ -372,8 +380,10 @@ export default {
     },
     activar() {
       let guardar = this;
+      let header = {"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
       axios
-        .put("api/Articulos/Activar/" + this.adId, {})
+        .put("api/Articulos/Activar/" + this.adId, {},configuracion)
         .then(function (response) {
           guardar.adModal = 0;
           guardar.adAccion = 0;
@@ -387,8 +397,10 @@ export default {
     },
     desactivar() {
       let guardar = this;
+      let header = {"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
       axios
-        .put("api/Articulos/Desactivar/" + this.adId, {})
+        .put("api/Articulos/Desactivar/" + this.adId, {},configuracion)
         .then(function (response) {
           guardar.adModal = 0;
           guardar.adAccion = 0;

@@ -189,8 +189,10 @@ export default {
   methods: {
     listar() {
       let me = this;
+      let header={"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
       axios
-        .get("api/Persona/ListarProveedores")
+        .get("api/Persona/ListarProveedores",configuracion)
         .then(function (response) {
           //console.log(response);
           me.proveedores = response.data;
@@ -232,6 +234,8 @@ export default {
       if (this.editedIndex > -1) {
         //Codigo para editar
         let guardar = this;
+        let header={"Authorization" : "Bearer " + this.$store.state.token};
+        let configuracion= {headers : header};
         axios
           .put("api/Persona/Actualizar", {
             'idpersona': guardar.id,
@@ -242,7 +246,7 @@ export default {
             'direccion':guardar.direccion,
             'telefono':guardar.telefono,
             'email':guardar.email
-          })
+          },configuracion)
           .then(function (response) {
             guardar.LimpiarForm();
             guardar.listar();
@@ -254,6 +258,8 @@ export default {
       } else {
         //codigo guaradr
         let guardar = this;
+        let header={"Authorization" : "Bearer " + this.$store.state.token};
+        let configuracion= {headers : header};
         axios
           .post("api/Persona/Crear", {
             'tipo_persona':'Proveedor',
@@ -264,7 +270,7 @@ export default {
             'telefono':guardar.telefono,
             'email':guardar.email
            
-          })
+          },configuracion)
           .then(function (response) {
             guardar.LimpiarForm();
             guardar.listar();

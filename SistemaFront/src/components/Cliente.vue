@@ -189,8 +189,10 @@ export default {
   methods: {
     listar() {
       let me = this;
+      let header={"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
       axios
-        .get("api/Persona/ListarClientes")
+        .get("api/Persona/ListarClientes",configuracion) //Listar Clientes
         .then(function (response) {
           //console.log(response);
           me.clientes = response.data;
@@ -232,6 +234,8 @@ export default {
       if (this.editedIndex > -1) {
         //Codigo para editar
         let guardar = this;
+        let header={"Authorization" : "Bearer " + this.$store.state.token};
+        let configuracion= {headers : header};
         axios
           .put("api/Persona/Actualizar", {
             'idpersona': guardar.id,
@@ -242,7 +246,7 @@ export default {
             'direccion':guardar.direccion,
             'telefono':guardar.telefono,
             'email':guardar.email
-          })
+          },configuracion)
           .then(function (response) {
             guardar.LimpiarForm();
             guardar.listar();
@@ -254,8 +258,10 @@ export default {
       } else {
         //codigo guaradr
         let guardar = this;
+        let header={"Authorization" : "Bearer " + this.$store.state.token};
+        let configuracion= {headers : header};
         axios
-          .post("api/Persona/Crear", {
+          .post("api/Persona/Crear", { //Crear cliente
             'tipo_persona':'Cliente',
             'nombre':guardar.nombre,
             'tipo_documento':guardar.tipo_documento,
@@ -264,7 +270,7 @@ export default {
             'telefono':guardar.telefono,
             'email':guardar.email
            
-          })
+          },configuracion)
           .then(function (response) {
             guardar.LimpiarForm();
             guardar.listar();

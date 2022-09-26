@@ -278,8 +278,10 @@ export default {
   methods: {
     listar() {
       let me = this;
+      let header={"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
       axios
-        .get("api/Usuarios/Listar")
+        .get("api/Usuarios/Listar",configuracion)
         .then(function (response) {
           //console.log(response);
           me.usuarios = response.data;
@@ -290,9 +292,11 @@ export default {
     },
     Select() {
       let me = this;
+      let header={"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
       var rolesArray = [];
       axios
-        .get("api/Roles/Select")
+        .get("api/Roles/Select",configuracion)
         .then(function (response) {
           rolesArray = response.data;
          rolesArray.map(function (x) {
@@ -340,6 +344,8 @@ export default {
       if (this.ValidarForm()) {
         return;
       }
+      let header={"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
       if (this.editedIndex > -1) {
         //Codigo para editar
         let guardar = this;
@@ -360,7 +366,7 @@ export default {
             'email':guardar.email,
             'password':guardar.password,
             'act_password':guardar.actPassword
-          })
+          },configuracion)
           .then(function (response) {
             guardar.LimpiarForm();
             guardar.listar();
@@ -372,7 +378,9 @@ export default {
       } else {
         //codigo guaradr
         let guardar = this;
-        axios
+        let header={"Authorization" : "Bearer " + this.$store.state.token};
+        let configuracion= {headers : header};
+         axios
           .post("api/Usuarios/Crear", {
             'idrol':guardar.idrol,
             'nombre':guardar.nombre,
@@ -382,7 +390,7 @@ export default {
             'telefono':guardar.telefono,
             'email':guardar.email,
             'password':guardar.password
-          })
+          },configuracion)
           .then(function (response) {
             guardar.LimpiarForm();
             guardar.listar();
@@ -436,8 +444,10 @@ export default {
     },
     activar() {
       let guardar = this;
+      let header={"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
       axios
-        .put("api/Usuarios/Activar/" + this.adId, {})
+        .put("api/Usuarios/Activar/" + this.adId, {},configuracion)
         .then(function (response) {
           guardar.adModal = 0;
           guardar.adAccion = 0;
@@ -451,8 +461,10 @@ export default {
     },
     desactivar() {
       let guardar = this;
+      let header={"Authorization" : "Bearer " + this.$store.state.token};
+      let configuracion= {headers : header};
       axios
-        .put("api/Usuarios/Desactivar/" + this.adId, {})
+        .put("api/Usuarios/Desactivar/" + this.adId, {},configuracion)
         .then(function (response) {
           guardar.adModal = 0;
           guardar.adAccion = 0;

@@ -18,6 +18,7 @@ namespace Sistema.Entidades.Almacen
             ErrorMessage = "El nombre no debe de tener más de 50 caracteres, ni menos de 3 caracteres.")]
         public string nombre { get; set; }
         [Required]
+        [Column(TypeName = "decimal(18,4)")]
         public decimal precio_venta { get; set; }
         [Required]
         public int stock { get; set; }

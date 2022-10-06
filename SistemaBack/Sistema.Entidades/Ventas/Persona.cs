@@ -10,7 +10,8 @@ namespace Sistema.Entidades.Ventas
     public class Persona
     {   
        
-        public int idpersona { get; set; }
+        public int idpersona { get; set; } //Esta es una llave primaria que esta referenciada con la entidad o tabla de ingreso
+                                            //El campo deberia llamarse en la tabla ingreso como idpersona pero esta como idprovedor.
         [Required]
         public string tipo_persona { get; set; }
         [Required]
@@ -22,6 +23,6 @@ namespace Sistema.Entidades.Ventas
         public string telefono { get; set; }
         public string email { get; set; }
 
-        public ICollection<Ingreso> ingreso  { get; set; }
+        public ICollection<Ingreso> ingresos  { get; set; }
     }
 }

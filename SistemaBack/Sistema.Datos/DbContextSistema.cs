@@ -19,6 +19,9 @@ namespace Sistema.Datos
         public DbSet<Rol> Roles { get; set; } //Se expone la colecion de articulos
         public DbSet<Usuario> Usuarios { get; set; } //Se expone la colecion de articulos
         public DbSet<Persona> Personas { get; set; } //Se expone la colecion de articulos
+         public DbSet<Ingreso> Ingresos { get; set; } //Se expone la colecion de la entidad ingresos
+          public DbSet<DetalleIngreso> DetallesIngresos { get; set; } //Se expone la colecion de la entidad ingresos
+        
         
         public DbContextSistema(DbContextOptions<DbContextSistema> options) : base(options)
         {
@@ -33,6 +36,8 @@ namespace Sistema.Datos
             modelBuilder.ApplyConfiguration(new RolMap()); 
             modelBuilder.ApplyConfiguration(new UsuarioMap()); 
             modelBuilder.ApplyConfiguration(new PersonaMap());
+             modelBuilder.ApplyConfiguration(new IngresoMap());
+              modelBuilder.ApplyConfiguration(new DetalleIngresoMap());
 
         }
     }

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Sistema.Entidades.Almacen;
 
 namespace Sistema.Entidades.Usuarios
 {
@@ -29,5 +30,6 @@ namespace Sistema.Entidades.Usuarios
 
         [ForeignKey("idrol")]
         public Rol rol { get; set; }
+        public ICollection<Ingreso> ingresos { get; set; }
     }
 }

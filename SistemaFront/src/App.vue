@@ -16,6 +16,7 @@
 
     <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="drawer" fixed app v-if="logueado">
       <v-list dense>
+        
         <template v-if="esAdministrador || esAlmacenero || esVendedor">
           <v-list-item :to="{ name: 'home' }">
             <v-list-item-action>
@@ -35,7 +36,7 @@
 
             <v-list-item :to="{ name: 'categorias' }">
               <v-list-item-action>
-                <v-icon>table_chart</v-icon>
+                <v-icon>category</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title> Categorías </v-list-item-title>
@@ -44,7 +45,7 @@
 
             <v-list-item :to="{ name: 'articulos' }">
               <v-list-item-action>
-                <v-icon>table_chart</v-icon>
+                <v-icon>grain</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title> Artículos </v-list-item-title>
@@ -63,7 +64,7 @@
 
             <v-list-item :to="{ name: '' }">
               <v-list-item-action>
-                <v-icon>table_chart</v-icon>
+                <v-icon>south_west</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title> Ingresos </v-list-item-title>
@@ -72,7 +73,7 @@
 
             <v-list-item :to="{ name: 'proveedores' }">
               <v-list-item-action>
-                <v-icon>table_chart</v-icon>
+                <v-icon>groups</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title> Proveedores </v-list-item-title>
@@ -91,7 +92,7 @@
 
             <v-list-item :to="{ name: '' }">
               <v-list-item-action>
-                <v-icon>table_chart</v-icon>
+                <v-icon>sell</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title> Ventas </v-list-item-title>
@@ -100,7 +101,7 @@
 
             <v-list-item :to="{ name: 'clientes' }">
               <v-list-item-action>
-                <v-icon>table_chart</v-icon>
+                <v-icon>people</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title> Clientes </v-list-item-title>
@@ -119,7 +120,7 @@
 
             <v-list-item :to="{ name: 'roles' }">
               <v-list-item-action>
-                <v-icon>table_chart</v-icon>
+                <v-icon>manage_accounts</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title> Roles </v-list-item-title>
@@ -128,7 +129,7 @@
 
             <v-list-item :to="{ name: 'usuarios' }">
               <v-list-item-action>
-                <v-icon>table_chart</v-icon>
+                <v-icon>account_box</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title> Usuarios </v-list-item-title>
@@ -147,16 +148,16 @@
 
             <v-list-item :to="{ name: '' }">
               <v-list-item-action>
-                <v-icon>table_chart</v-icon>
+                <v-icon>paid</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title> Consulta Compras </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item :to="{ name: 'categorias' }">
+            <v-list-item :to="{ name: '' }">
               <v-list-item-action>
-                <v-icon>table_chart</v-icon>
+                <v-icon>trending_up</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title> Consulta Ventas </v-list-item-title>

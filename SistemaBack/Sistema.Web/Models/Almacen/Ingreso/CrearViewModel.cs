@@ -1,17 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using Sistema.Entidades.Usuarios;
-using Sistema.Entidades.Ventas;
 
-namespace Sistema.Entidades.Almacen
+namespace Sistema.Web.Models.Almacen.Ingreso
 {
-    public class Ingreso
+    public class CrearViewModel
     {
-        public int idingreso { get; set; }
+        //Propiedades maestro
         [Required]
         public int idproveedor { get; set; }
         [Required]
@@ -22,19 +19,11 @@ namespace Sistema.Entidades.Almacen
         [Required]
         public string num_comprobante { get; set; }
         [Required]
-        public DateTime fecha_hora { get; set; }
-        [Required]
         public decimal impuesto { get; set; }
         [Required]
         public decimal total { get; set; }
+        //Propiedades detalle
         [Required]
-        public string estado { get; set; }
-
-        public ICollection<DetalleIngreso> detalles { get; set; }
-
-        [ForeignKey("idusuario ")]
-        public Usuario usuario { get; set; }
-        public Persona persona { get; set; }
-
+        public List<DetalleViewModel> detalles { get; set; }
     }
 }

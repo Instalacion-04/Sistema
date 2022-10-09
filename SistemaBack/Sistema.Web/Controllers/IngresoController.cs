@@ -25,7 +25,7 @@ namespace Sistema.Web.Controllers
 
          /******Listar*******/
         // GET: api/Articulos/Listar
-        //[Authorize(Roles = "Almacenero,Administrador")]
+        [Authorize(Roles = "Almacenero,Administrador")]
         [HttpGet("[action]")]
         public async Task<IEnumerable<IngresoViewModel>> Listar()
         {
@@ -44,6 +44,7 @@ namespace Sistema.Web.Controllers
                idusuario=i.idusuario,
                usuario=i.usuario.nombre,
                tipo_comprobante=i.tipo_comprobante,
+               serie_comprobante=i.serie_comprobante,
                num_comprobante=i.num_comprobante,
                fecha_hora=i.fecha_hora,
                impuesto=i.impuesto,
@@ -56,7 +57,7 @@ namespace Sistema.Web.Controllers
 
         
         // POST: api/Ingresos/Crear
-       // [Authorize(Roles = "Almacenero,Administrador")]
+       [Authorize(Roles = "Almacenero,Administrador")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Crear([FromBody] CrearViewModel model)
         {

@@ -8,6 +8,7 @@ import Usuarios_Component from '../components/Usuario.vue'
 import Cliente_Component from '../components/Cliente.vue'
 import Proveedor_Componet from '../components/Proveedor.vue'
 import Login_Component from '../components/Login.vue'
+import Ingreso_Component from '../components/Ingreso.vue'
 import store from '../store'
 
 Vue.use(VueRouter)
@@ -27,6 +28,15 @@ const routes = [
     path: '/categorias',
     name: 'categorias',
     component: Categoria_Component,
+    meta :{
+      administrador : true,
+      almacenero : true,
+    }
+  },
+  {
+    path: '/ingresos',
+    name: 'ingresos',
+    component: Ingreso_Component,
     meta :{
       administrador : true,
       almacenero : true,

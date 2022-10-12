@@ -1,144 +1,24 @@
 <template>
   <v-layout aligm-start>
     <v-flex>
-      <v-data-table
-        :headers="Tabla_Encabezados"
-        :items="ingresos"
-        sort-by="calories"
-        class="elevation-1"
-        :search="buscar"
-      >
+      <v-data-table :headers="Tabla_Encabezados" :items="ingresos" class="elevation-1" :search="buscar"
+        v-if="verNuevo==0">
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>Ingreso</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
-            <v-text-field
-              class="text-xs-center"
-              v-model="buscar"
-              append-icon="search"
-              label="Búsqueda"
-              single-line
-              hide-details
-            ></v-text-field>
+            <v-text-field v-if="verNuevo==0" class="text-xs-center" v-model="buscar" append-icon="search"
+              label="Búsqueda" single-line hide-details></v-text-field>
             <v-spacer></v-spacer>
-
-            <v-dialog v-model="dialog" max-width="500px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  dark
-                  class="mb-2"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  Agregar
-                </v-btn>
-              </template>
-              <v-card>
-                <v-card-title>
-                  <span class="text-h5">{{ formTitle }}</span>
-                </v-card-title>
-
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          v-model="nombre"
-                          label="Nombre"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="6">
-                        <v-select
-                          v-model="idrol"
-                          :items="roles"
-                          label="Rol"
-                        >
-                        </v-select>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="6">
-                        <v-select v-model="tipo_documento" 
-                                  :items="documentos" 
-                                  label="Tipo Documento">
-                        </v-select>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          v-model="num_documento"
-                          label="Número Documento"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          v-model="direccion"
-                          label="Dirección"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          v-model="telefono"
-                          label="Teléfono"
-                        ></v-text-field>
-                      </v-col>
-
-
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          v-model="email"
-                          label="Email"
-                        ></v-text-field>
-                      </v-col>
-
-
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          type="password"
-                          v-model="password"
-                          label="Password"
-                        ></v-text-field>
-                      </v-col>
-
-
-                      <v-col cols="12" sm="12" md="12" v-show="valida">
-                        <div
-                          class="red--text"
-                          v-for="v in ValidarMensaje"
-                          :key="v"
-                          v-text="v"
-                        ></div>
-                      </v-col>
-
-                    </v-row>
-                  </v-container>
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="CerrarForm">
-                    Cerrar
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="GuardarRegistro">
-                    Guardar
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            <v-btn v-if="verNuevo==0" @click="mostrarNuevo" color="primary" dark class="mb-2">
+              Nuevo
+            </v-btn>
 
             <v-dialog v-model="adModal" max-width="290">
               <v-card>
-                <v-card-title class="headline" v-if="adAccion == 1"
-                  >¿Activar Item?</v-card-title
-                >
-                <v-card-title class="headline" v-if="adAccion == 2"
-                  >¿Desactivar Item?</v-card-title
-                >
+                <v-card-title class="headline" v-if="adAccion == 1">¿Activar Item?</v-card-title>
+                <v-card-title class="headline" v-if="adAccion == 2">¿Desactivar Item?</v-card-title>
 
                 <v-card-text>
                   Estás a punto de
@@ -149,30 +29,14 @@
 
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn
-                    color="green darken-1"
-                    text
-                    @click="activarDesactivarCerrar"
-                    >Cancelar</v-btn
-                  >
-                  <v-btn
-                    v-if="adAccion == 1"
-                    color="orange darken-4"
-                    text
-                    @click="activar"
-                    >Activar</v-btn
-                  >
-                  <v-btn
-                    v-if="adAccion == 2"
-                    color="orange darken-4"
-                    text
-                    @click="desactivar"
-                    >Desactivar</v-btn
-                  >
+                  <v-btn color="green darken-1" text @click="activarDesactivarCerrar">Cancelar</v-btn>
+                  <v-btn v-if="adAccion == 1" color="orange darken-4" text @click="activar">Activar</v-btn>
+                  <v-btn v-if="adAccion == 2" color="orange darken-4" text @click="desactivar">Desactivar</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
           </v-toolbar>
+
         </template>
 
         <template v-slot:item="props">
@@ -180,38 +44,33 @@
             <td>{{ props.item.usuario }}</td>
             <td>{{ props.item.proveedor }}</td>
             <td>{{ props.item.tipo_comprobante }}</td>
-             <td>{{ props.item.serie_comprobante }}</td>
-       
+            <td>{{ props.item.serie_comprobante }}</td>
+
             <td>{{ props.item.num_comprobante }}</td>
             <td>{{ props.item.fecha_hora }}</td>
             <td>{{ props.item.impuesto }}</td>
             <td>{{ props.item.total }}</td>
             <td>
-                 <v-chip color="primary" outlined>
-                <div v-if="props.item.estado =='Aceptado'">
+              <v-chip color="primary" outlined>
+                <div v-if="props.item.estado == 'Aceptado'">
                   <span class="indigo--text">Aceptado</span>
                 </div>
 
                 <div v-else>
-                  <span class="red--text">{{props.item.estado}}</span>
-                </div></v-chip>
-              
+                  <span class="red--text">{{ props.item.estado }}</span>
+                </div>
+              </v-chip>
             </td>
-            <td>
-              <v-icon small class="mr-2" @click="EditarItem(props.item)"
-                >edit</v-icon
-              >
 
-              <template v-if="props.item.estado=='Aceptado'">
-                <v-icon small @click="activarDesactivarMostrar(2, props.item)"
-                  >lock_open</v-icon
-                >
+            <td>
+              <v-icon small class="mr-2" @click="EditarItem(props.item)">edit</v-icon>
+
+              <template v-if="props.item.estado == 'Aceptado'">
+                <v-icon small @click="activarDesactivarMostrar(2, props.item)">lock_open</v-icon>
               </template>
 
               <template v-else>
-                <v-icon small @click="activarDesactivarMostrar(1, props.item)"
-                  >lock</v-icon
-                >
+                <v-icon small @click="activarDesactivarMostrar(1, props.item)">lock</v-icon>
               </template>
             </td>
           </tr>
@@ -220,7 +79,93 @@
         <template v-slot:no-data>
           <v-btn color="primary" @click="listar">Actualizar </v-btn>
         </template>
+
       </v-data-table>
+
+      <v-container grid-list-sm class="pa-4 white" v-if="verNuevo">
+        <v-layout row wrap>
+
+          <v-flex xs12 sm4 md4 lg4 xl4>
+            <v-select v-model="tipo_comprobante" :items="comprobantes" label="Tipo Comprobante"></v-select>
+          </v-flex>
+
+          <v-flex xs12 sm4 md4 lg4 xl4>
+            <v-text-field v-model="serie_comprobante" label="Serie Comprobante"></v-text-field>
+          </v-flex>
+
+          <v-flex xs12 sm4 md4 lg4 xl4>
+            <v-text-field v-model="num_comprobante" label="Número  Comprobante"></v-text-field>
+          </v-flex>
+
+          <v-flex xs12 sm8 md8 lg8 xl8>
+            <v-select v-model="idproveedor" :items="proveedores" label="Proveedor"></v-select>
+          </v-flex>
+
+          <v-flex xs12 sm4 md4 lg4 xl4>
+            <v-text-field type="number" v-model="impuesto" label="Impuesto"></v-text-field>
+          </v-flex>
+
+          <v-flex xs12 sm8 md8 lg8 xl8>
+            <v-text-field @keyup.enter="buscarCodigo()" v-model="codigo" label="Código"></v-text-field>
+          </v-flex>
+
+         
+
+          <v-flex xs12 sm2 md2 lg2 xl2>
+            <v-btn @click="buscarCodigo()" small fab dark color="teal">
+              <v-icon dark>list</v-icon>
+            </v-btn>
+          </v-flex>
+
+           <v-flex xs12 sm2 md2 lg2 xl2 v-if="errorArticulo">
+            <div class="red--text" v-text="errorArticulo">
+
+            </div>
+          </v-flex>
+
+          <v-flex xs12 sm12 md12 lg12 xl12>
+            <v-data-table :headers="cabeceraDetalles" :items="detalles" hide-default-footer class="elevation-1">
+              <template v-slot:item="props">
+                <tr>
+                  <td>
+                    <v-icon small class="mr-2" @click="eliminarDelDetalle(detalles,props.item)">delete</v-icon>
+                  </td>
+                  <td>{{ props.item.articulo }}</td>
+                  <td><v-text-field type="number" v-model="props.item.cantidad"></v-text-field></td>
+                     <td><v-text-field type="number" v-model="props.item.precio"></v-text-field></td>
+                  <td> $ {{ props.item.cantidad * props.item.precio }}</td>
+
+
+
+                </tr>
+              </template>
+              <template v-slot:no-data>
+                <h3>No hay artículos agregados al detalle</h3>
+              </template>
+            </v-data-table>
+
+            <v-flex class="text-xs-right">
+              <strong>Total Parcial:</strong> $ {{totalParcial=(total-totalImpuesto).toFixed(2)}}
+            </v-flex>
+            <v-flex class="text-xs-right">
+              <strong>Total Impuesto:</strong> $ {{totalImpuesto=((total*impuesto)/(100+impuesto)).toFixed(2)}}
+            </v-flex>
+            <v-flex class="text-xs-right">
+              <strong>Total Neto:</strong> $ {{total=(calcularTotal).toFixed(2)}}
+            </v-flex>
+          </v-flex>
+          <v-flex xs12 sm12 md12 lg12 xl12>
+            <div class="red--text" v-for="v in ValidarMensaje" :key="v" v-text="v">
+            </div>
+          </v-flex>
+
+          <v-flex xs12 sm12 md12 lg12 xl12>
+            <v-btn @click="ocultarNuevo" color="blue darken-1" text>Cancelar</v-btn>
+            <v-btn color="success">Guardar</v-btn>
+          </v-flex>
+
+        </v-layout>
+      </v-container>
     </v-flex>
   </v-layout>
 </template>
@@ -244,21 +189,33 @@ export default {
       { text: "Estado", value: "estado", sortable: false },
       { text: "Acciones", value: "", sortable: false },
     ],
+
+    cabeceraDetalles: [
+      { text: "Borrar", value: "borrar", soportable: false },
+      { text: "Articulo", value: "articulo", soportable: false },
+      { text: "Cantidad", value: "cantidad", soportable: false },
+      { text: "Precio", value: "precio", soportable: false },
+      { text: "Subtotal", value: "subtotal", soportable: false },
+    ],
+    detalles: [
+      
+    ],
     buscar: "",
     editedIndex: -1,
     id: "",
-    idrol: "",
-    roles: [],
-    nombre:"",
-    tipo_documento: "",
-    documentos: ["DNI", "RUC", "PASAPORTE", "CEDULA"],
-    num_documento: "",
-    direccion: "",
-    telefono: "",
-    email: "",
-    password: "",
-    actPassword: false,
-    passwordAnt:'',
+    idproveedor: "",
+    proveedores: [],
+    tipo_comprobante: "",
+    comprobantes: ["FACTURA", "BOLETA", "TICKET", "GUIA"],
+    serie_comprobante: "",
+    num_comprobante: "",
+    impuesto: 18,
+    codigo: "",
+    verNuevo: 0,
+    errorArticulo: null,
+    totalParcial:0,
+    totalImpuesto:0,
+    total:0,
     valida: 0,
     ValidarMensaje: [],
     adModal: 0,
@@ -268,9 +225,13 @@ export default {
   }),
 
   computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "Nuevo Usuario" : "Actualizar Datos de Usuario";
-    },
+    calcularTotal:function(){
+      var resultado=0.0;
+      for(var i=0; i<this.detalles.length;i++){
+        resultado = resultado + (this.detalles[i].precio*this.detalles[i].cantidad);
+      }
+      return resultado;
+    }
   },
 
   created() {
@@ -279,12 +240,72 @@ export default {
   },
 
   methods: {
+    mostrarNuevo() {
+      this.verNuevo = 1;
+    },
+    ocultarNuevo() {
+      this.verNuevo = 0;
+    },
+
+    buscarCodigo() {
+      let me = this;
+      me.errorArticulo=null;
+      let header = { Authorization: "Bearer " + this.$store.state.token };
+      let configuracion = { headers: header };
+      axios
+        .get("api/Articulos/BuscarCodigoIngreso/" + this.codigo,configuracion)
+        .then(function (response) {
+          me.agregaralDetalle(response.data);         
+        })
+        .catch(function (error) {
+          console.log(error);
+          me.errorArticulo='No existe el artículo';
+        });
+    },
+
+    agregaralDetalle(data = []){
+      this.errorArticulo=null;
+      if(this.encuentra(data['idarticulo'])){
+        this.errorArticulo="El artículo ya fue agregado a la lista."
+      }
+      else{
+         this.detalles.push(
+        {idarticulo:data['idarticulo'],
+        articulo:data['nombre'],
+        cantidad:1,
+        precio:1,
+        }
+      );
+
+      }
+     
+
+    },
+    encuentra(id){
+      var sw=0;
+      for(var i=0;i<this.detalles.length;i++){
+        if(this.detalles[i].idarticulo==id){
+          sw=1;
+        }
+      }
+      return sw;
+
+    },
+
+    eliminarDelDetalle(arr,item){
+      var i= arr.indexOf(item);
+      if(i!==-1){
+        arr.splice(i,1);
+      }
+
+    },
+
     listar() {
       let me = this;
-      let header={"Authorization" : "Bearer " + this.$store.state.token};
-      let configuracion= {headers : header};
+      let header = { Authorization: "Bearer " + this.$store.state.token };
+      let configuracion = { headers: header };
       axios
-        .get("api/Ingreso/Listar",configuracion)
+        .get("api/Ingreso/Listar", configuracion)
         .then(function (response) {
           //console.log(response);
           me.ingresos = response.data;
@@ -295,15 +316,15 @@ export default {
     },
     Select() {
       let me = this;
-      let header={"Authorization" : "Bearer " + this.$store.state.token};
-      let configuracion= {headers : header};
-      var rolesArray = [];
+      let header = { Authorization: "Bearer " + this.$store.state.token };
+      let configuracion = { headers: header };
+      var proveedoresArray = [];
       axios
-        .get("api/Roles/Select",configuracion)
+        .get("api/Persona/SelectProveedores", configuracion)
         .then(function (response) {
-          rolesArray = response.data;
-         rolesArray.map(function (x) {
-            me.roles.push({ text: x.nombre, value: x.idrol });
+          proveedoresArray = response.data;
+          proveedoresArray.map(function (x) {
+            me.proveedores.push({ text: x.nombre, value: x.idpersona });
           });
         })
         .catch(function (error) {
@@ -317,11 +338,11 @@ export default {
       this.nombre = item.nombre;
       this.tipo_documento = item.tipo_documento;
       this.num_documento = item.num_documento;
-      this.direccion= item.direccion;
+      this.direccion = item.direccion;
       this.telefono = item.telefono;
       this.email = item.email;
       this.password = item.password_hash;
-      this.passwordAnt=item.password_hash;
+      this.passwordAnt = item.password_hash;
       this.editedIndex = 1;
       this.dialog = true;
     },
@@ -337,39 +358,42 @@ export default {
       this.num_documento = "";
       this.direccion = "";
       this.telefono = "";
-      this.email= "";
-      this.password= "";
-      this.passwordAnt="";
-      this.actPassword=false;
-        this.editedIndex = -1;
+      this.email = "";
+      this.password = "";
+      this.passwordAnt = "";
+      this.actPassword = false;
+      this.editedIndex = -1;
     },
     GuardarRegistro() {
       if (this.ValidarForm()) {
         return;
       }
-      let header={"Authorization" : "Bearer " + this.$store.state.token};
-      let configuracion= {headers : header};
+      let header = { Authorization: "Bearer " + this.$store.state.token };
+      let configuracion = { headers: header };
       if (this.editedIndex > -1) {
         //Codigo para editar
         let guardar = this;
-        if(guardar.password!=guardar.passwordAnt)
-        {
-          guardar.actPassword=true;
+        if (guardar.password != guardar.passwordAnt) {
+          guardar.actPassword = true;
         }
 
         axios
-          .put("api/Usuarios/Actualizar", {
-            'idusuario': guardar.id,
-            'idrol':guardar.idrol,
-            'nombre':guardar.nombre,
-            'tipo_documento':guardar.tipo_documento,
-            'num_documento':guardar.num_documento,
-            'direccion':guardar.direccion,
-            'telefono':guardar.telefono,
-            'email':guardar.email,
-            'password':guardar.password,
-            'act_password':guardar.actPassword
-          },configuracion)
+          .put(
+            "api/Usuarios/Actualizar",
+            {
+              idusuario: guardar.id,
+              idrol: guardar.idrol,
+              nombre: guardar.nombre,
+              tipo_documento: guardar.tipo_documento,
+              num_documento: guardar.num_documento,
+              direccion: guardar.direccion,
+              telefono: guardar.telefono,
+              email: guardar.email,
+              password: guardar.password,
+              act_password: guardar.actPassword,
+            },
+            configuracion
+          )
           .then(function (response) {
             guardar.LimpiarForm();
             guardar.listar();
@@ -381,19 +405,23 @@ export default {
       } else {
         //codigo guaradr
         let guardar = this;
-        let header={"Authorization" : "Bearer " + this.$store.state.token};
-        let configuracion= {headers : header};
-         axios
-          .post("api/Usuarios/Crear", {
-            'idrol':guardar.idrol,
-            'nombre':guardar.nombre,
-            'tipo_documento':guardar.tipo_documento,
-            'num_documento':guardar.num_documento,
-            'direccion':guardar.direccion,
-            'telefono':guardar.telefono,
-            'email':guardar.email,
-            'password':guardar.password
-          },configuracion)
+        let header = { Authorization: "Bearer " + this.$store.state.token };
+        let configuracion = { headers: header };
+        axios
+          .post(
+            "api/Usuarios/Crear",
+            {
+              idrol: guardar.idrol,
+              nombre: guardar.nombre,
+              tipo_documento: guardar.tipo_documento,
+              num_documento: guardar.num_documento,
+              direccion: guardar.direccion,
+              telefono: guardar.telefono,
+              email: guardar.email,
+              password: guardar.password,
+            },
+            configuracion
+          )
           .then(function (response) {
             guardar.LimpiarForm();
             guardar.listar();
@@ -424,7 +452,7 @@ export default {
       if (!this.password) {
         this.ValidarMensaje.push("Ingrese una contraseña.");
       }
-  
+
       if (this.ValidarMensaje.length) {
         this.valida = 1;
       }
@@ -447,10 +475,10 @@ export default {
     },
     activar() {
       let guardar = this;
-      let header={"Authorization" : "Bearer " + this.$store.state.token};
-      let configuracion= {headers : header};
+      let header = { Authorization: "Bearer " + this.$store.state.token };
+      let configuracion = { headers: header };
       axios
-        .put("api/Usuarios/Activar/" + this.adId, {},configuracion)
+        .put("api/Usuarios/Activar/" + this.adId, {}, configuracion)
         .then(function (response) {
           guardar.adModal = 0;
           guardar.adAccion = 0;
@@ -464,10 +492,10 @@ export default {
     },
     desactivar() {
       let guardar = this;
-      let header={"Authorization" : "Bearer " + this.$store.state.token};
-      let configuracion= {headers : header};
+      let header = { Authorization: "Bearer " + this.$store.state.token };
+      let configuracion = { headers: header };
       axios
-        .put("api/Usuarios/Desactivar/" + this.adId, {},configuracion)
+        .put("api/Usuarios/Desactivar/" + this.adId, {}, configuracion)
         .then(function (response) {
           guardar.adModal = 0;
           guardar.adAccion = 0;

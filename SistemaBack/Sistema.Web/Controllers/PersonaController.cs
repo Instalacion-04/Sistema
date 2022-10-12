@@ -44,6 +44,7 @@ namespace Sistema.Web.Controllers
             });
 
         }
+        
 
         // GET: api/Personas/ListarProveedores
         [Authorize(Roles = "Almacenero,Administrador")]
@@ -66,6 +67,23 @@ namespace Sistema.Web.Controllers
             });
 
         }
+        // GET: api/Personas/SelectProveedores
+          [Authorize(Roles = "Almacenero,Administrador")]
+        [HttpGet("[action]")]
+        
+        public async Task<IEnumerable<SelectViewModel>> SelectProveedores()
+        {
+            var persona = await _context.Personas.Where(p => p.tipo_persona=="Proveedor"
+            ).ToListAsync();
+
+            return persona.Select(p => new SelectViewModel
+            {
+                idpersona = p.idpersona,
+                nombre = p.nombre
+            });
+
+        }
+
 
 
         // POST: api/Persona/Crear

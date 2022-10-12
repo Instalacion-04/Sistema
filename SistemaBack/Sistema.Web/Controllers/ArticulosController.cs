@@ -12,7 +12,7 @@ using Sistema.Web.Models.Almacen.Articulos;
 
 namespace Sistema.Web.Controllers
 {
-    [Authorize(Roles = "Almacenero,Administrador")]
+    //[Authorize(Roles = "Almacenero,Administrador")]
     [Route("api/[controller]")]
     [ApiController]
     public class ArticulosController : ControllerBase
@@ -31,6 +31,32 @@ namespace Sistema.Web.Controllers
         public async Task<IEnumerable<ArticuloViewModel>> Listar()
         {
             var articulo = await _context.Articulos.Include(a => a.categoria).ToListAsync();
+
+            return articulo.Select(a => new ArticuloViewModel
+            {
+                idarticulo = a.idarticulo,
+                idcategoria = a.idcategoria,
+                categoria = a.categoria.nombre,
+                codigo = a.codigo,
+                nombre = a.nombre,
+                stock = a.stock,
+                precio_venta = a.precio_venta,
+                descripcion = a.descripcion,
+                condicion = a.condicion
+            });
+
+        }
+
+        /******Listar*******/
+        // GET: api/Articulos/ListarIngreso/texto
+        [Authorize(Roles = "Almacenero,Administrador")]
+        [HttpGet("[action]/{texto}")]
+        public async Task<IEnumerable<ArticuloViewModel>> ListarIngreso([FromRoute] string texto)
+        {
+            var articulo = await _context.Articulos.Include(a => a.categoria)
+            .Where(a =>a.nombre.Contains(texto))
+            .Where(a=>a.condicion==true)
+            .ToListAsync();
 
             return articulo.Select(a => new ArticuloViewModel
             {
@@ -76,6 +102,38 @@ namespace Sistema.Web.Controllers
                 condicion = articulo.condicion
             });
         }
+
+         /*********Mostrar por ID*************/
+        // GET: api/Articulos/BuscarCodigoIngreso/12345
+        [Authorize(Roles = "Almacenero,Administrador")]
+        [HttpGet("[action]/{codigo}")]
+        public async Task<IActionResult> BuscarCodigoIngreso([FromRoute] string codigo)
+        {
+
+            var articulo = await _context.Articulos.Include(a => a.categoria).
+            Where(a => a.condicion==true).
+            SingleOrDefaultAsync(a => a.codigo == codigo);
+
+            if (articulo == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new ArticuloViewModel
+            {
+
+                idarticulo = articulo.idarticulo,
+                idcategoria = articulo.idcategoria,
+                categoria = articulo.categoria.nombre,
+                codigo = articulo.codigo,
+                nombre = articulo.nombre,
+                descripcion = articulo.descripcion,
+                stock = articulo.stock,
+                precio_venta = articulo.precio_venta,
+                condicion = articulo.condicion
+            });
+        }
+
 
         /*********Actualizar*************/
         // PUT: api/Articulos/Actualizar

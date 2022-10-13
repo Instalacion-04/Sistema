@@ -49,7 +49,7 @@ namespace Sistema.Web.Controllers
 
         /******Listar*******/
         // GET: api/Articulos/ListarIngreso/texto
-        [Authorize(Roles = "Almacenero,Administrador")]
+         [Authorize(Roles = "Almacenero,Administrador")]
         [HttpGet("[action]/{texto}")]
         public async Task<IEnumerable<ArticuloViewModel>> ListarIngreso([FromRoute] string texto)
         {

@@ -1,24 +1,48 @@
 <template>
   <v-layout aligm-start>
     <v-flex>
-      <v-data-table :headers="Tabla_Encabezados" :items="ingresos" class="elevation-1" :search="buscar"
-        v-if="verNuevo==0">
+      <!--Vista de ingreso y sus elementos -->
+      <v-data-table
+        :headers="Tabla_Encabezados"
+        :items="ingresos"
+        class="elevation-1"
+        :search="buscar"
+        v-if="verNuevo == 0"
+      >
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>Ingreso</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
-            <v-text-field v-if="verNuevo==0" class="text-xs-center" v-model="buscar" append-icon="search"
-              label="Búsqueda" single-line hide-details></v-text-field>
+            <v-text-field
+              v-if="verNuevo == 0"
+              class="text-xs-center"
+              v-model="buscar"
+              append-icon="search"
+              label="Búsqueda"
+              single-line
+              hide-details
+            ></v-text-field>
             <v-spacer></v-spacer>
-            <v-btn v-if="verNuevo==0" @click="mostrarNuevo" color="primary" dark class="mb-2">
+
+            <v-btn
+              v-if="verNuevo == 0"
+              @click="mostrarNuevo"
+              color="primary"
+              dark
+              class="mb-2"
+            >
               Nuevo
             </v-btn>
 
             <v-dialog v-model="adModal" max-width="290">
               <v-card>
-                <v-card-title class="headline" v-if="adAccion == 1">¿Activar Item?</v-card-title>
-                <v-card-title class="headline" v-if="adAccion == 2">¿Desactivar Item?</v-card-title>
+                <v-card-title class="headline" v-if="adAccion == 1"
+                  >¿Activar Item?</v-card-title
+                >
+                <v-card-title class="headline" v-if="adAccion == 2"
+                  >¿Desactivar Item?</v-card-title
+                >
 
                 <v-card-text>
                   Estás a punto de
@@ -29,14 +53,30 @@
 
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="green darken-1" text @click="activarDesactivarCerrar">Cancelar</v-btn>
-                  <v-btn v-if="adAccion == 1" color="orange darken-4" text @click="activar">Activar</v-btn>
-                  <v-btn v-if="adAccion == 2" color="orange darken-4" text @click="desactivar">Desactivar</v-btn>
+                  <v-btn
+                    color="green darken-1"
+                    text
+                    @click="activarDesactivarCerrar"
+                    >Cancelar</v-btn
+                  >
+                  <v-btn
+                    v-if="adAccion == 1"
+                    color="orange darken-4"
+                    text
+                    @click="activar"
+                    >Activar</v-btn
+                  >
+                  <v-btn
+                    v-if="adAccion == 2"
+                    color="orange darken-4"
+                    text
+                    @click="desactivar"
+                    >Desactivar</v-btn
+                  >
                 </v-card-actions>
               </v-card>
             </v-dialog>
           </v-toolbar>
-
         </template>
 
         <template v-slot:item="props">
@@ -63,14 +103,20 @@
             </td>
 
             <td>
-              <v-icon small class="mr-2" @click="EditarItem(props.item)">edit</v-icon>
+              <v-icon small class="mr-2" @click="EditarItem(props.item)"
+                >edit</v-icon
+              >
 
               <template v-if="props.item.estado == 'Aceptado'">
-                <v-icon small @click="activarDesactivarMostrar(2, props.item)">lock_open</v-icon>
+                <v-icon small @click="activarDesactivarMostrar(2, props.item)"
+                  >lock_open</v-icon
+                >
               </template>
 
               <template v-else>
-                <v-icon small @click="activarDesactivarMostrar(1, props.item)">lock</v-icon>
+                <v-icon small @click="activarDesactivarMostrar(1, props.item)"
+                  >lock</v-icon
+                >
               </template>
             </td>
           </tr>
@@ -79,64 +125,98 @@
         <template v-slot:no-data>
           <v-btn color="primary" @click="listar">Actualizar </v-btn>
         </template>
-
       </v-data-table>
 
+      <!--Este bloque son todos los elementos de nuevo o lo que se ve en nuevo-->
       <v-container grid-list-sm class="pa-4 white" v-if="verNuevo">
         <v-layout row wrap>
-
           <v-flex xs12 sm4 md4 lg4 xl4>
-            <v-select v-model="tipo_comprobante" :items="comprobantes" label="Tipo Comprobante"></v-select>
+            <v-select
+              v-model="tipo_comprobante"
+              :items="comprobantes"
+              label="Tipo Comprobante"
+            ></v-select>
           </v-flex>
 
           <v-flex xs12 sm4 md4 lg4 xl4>
-            <v-text-field v-model="serie_comprobante" label="Serie Comprobante"></v-text-field>
+            <v-text-field
+              v-model="serie_comprobante"
+              label="Serie Comprobante"
+            ></v-text-field>
           </v-flex>
 
           <v-flex xs12 sm4 md4 lg4 xl4>
-            <v-text-field v-model="num_comprobante" label="Número  Comprobante"></v-text-field>
+            <v-text-field
+              v-model="num_comprobante"
+              label="Número  Comprobante"
+            ></v-text-field>
           </v-flex>
 
           <v-flex xs12 sm8 md8 lg8 xl8>
-            <v-select v-model="idproveedor" :items="proveedores" label="Proveedor"></v-select>
+            <v-select
+              v-model="idproveedor"
+              :items="proveedores"
+              label="Proveedor"
+            ></v-select>
           </v-flex>
 
           <v-flex xs12 sm4 md4 lg4 xl4>
-            <v-text-field type="number" v-model="impuesto" label="Impuesto"></v-text-field>
+            <v-text-field
+              type="number"
+              v-model="impuesto"
+              label="Impuesto"
+            ></v-text-field>
           </v-flex>
 
           <v-flex xs12 sm8 md8 lg8 xl8>
-            <v-text-field @keyup.enter="buscarCodigo()" v-model="codigo" label="Código"></v-text-field>
+            <v-text-field
+              @keyup.enter="buscarCodigo()"
+              v-model="codigo"
+              label="Agregar por Código"
+            ></v-text-field>
           </v-flex>
-
-         
 
           <v-flex xs12 sm2 md2 lg2 xl2>
-            <v-btn @click="buscarCodigo()" small fab dark color="teal">
+            <v-btn @click="mostrarArticulos()" small fab dark color="teal">
               <v-icon dark>list</v-icon>
             </v-btn>
           </v-flex>
 
-           <v-flex xs12 sm2 md2 lg2 xl2 v-if="errorArticulo">
-            <div class="red--text" v-text="errorArticulo">
-
-            </div>
+          <v-flex xs12 sm2 md2 lg2 xl2 v-if="errorArticulo">
+            <div class="red--text" v-text="errorArticulo"></div>
           </v-flex>
 
           <v-flex xs12 sm12 md12 lg12 xl12>
-            <v-data-table :headers="cabeceraDetalles" :items="detalles" hide-default-footer class="elevation-1">
+            <v-data-table
+              :headers="cabeceraDetalles"
+              :items="detalles"
+              hide-default-footer
+              class="elevation-1"
+            >
               <template v-slot:item="props">
                 <tr>
                   <td>
-                    <v-icon small class="mr-2" @click="eliminarDelDetalle(detalles,props.item)">delete</v-icon>
+                    <v-icon
+                      small
+                      class="mr-2"
+                      @click="eliminarDelDetalle(detalles, props.item)"
+                      >delete</v-icon
+                    >
                   </td>
                   <td>{{ props.item.articulo }}</td>
-                  <td><v-text-field type="number" v-model="props.item.cantidad"></v-text-field></td>
-                     <td><v-text-field type="number" v-model="props.item.precio"></v-text-field></td>
-                  <td> $ {{ props.item.cantidad * props.item.precio }}</td>
-
-
-
+                  <td>
+                    <v-text-field
+                      type="number"
+                      v-model="props.item.cantidad"
+                    ></v-text-field>
+                  </td>
+                  <td>
+                    <v-text-field
+                      type="number"
+                      v-model="props.item.precio"
+                    ></v-text-field>
+                  </td>
+                  <td>$ {{ props.item.cantidad * props.item.precio }}</td>
                 </tr>
               </template>
               <template v-slot:no-data>
@@ -145,27 +225,103 @@
             </v-data-table>
 
             <v-flex class="text-xs-right">
-              <strong>Total Parcial:</strong> $ {{totalParcial=(total-totalImpuesto).toFixed(2)}}
+              <strong>Total Parcial:</strong> $
+              {{ (totalParcial = (total - totalImpuesto).toFixed(2)) }}
+            </v-flex>
+
+            <v-flex class="text-xs-right">
+              <strong>Total Impuesto:</strong> $
+              {{
+                (totalImpuesto = (
+                  (total * impuesto) /
+                  (100 + impuesto)
+                ).toFixed(2))
+              }}
             </v-flex>
             <v-flex class="text-xs-right">
-              <strong>Total Impuesto:</strong> $ {{totalImpuesto=((total*impuesto)/(100+impuesto)).toFixed(2)}}
-            </v-flex>
-            <v-flex class="text-xs-right">
-              <strong>Total Neto:</strong> $ {{total=(calcularTotal).toFixed(2)}}
+              <strong>Total Neto:</strong> $
+              {{ (total = calcularTotal.toFixed(2)) }}
             </v-flex>
           </v-flex>
           <v-flex xs12 sm12 md12 lg12 xl12>
-            <div class="red--text" v-for="v in ValidarMensaje" :key="v" v-text="v">
-            </div>
+            <div
+              class="red--text"
+              v-for="v in ValidarMensaje"
+              :key="v"
+              v-text="v"
+            ></div>
           </v-flex>
 
           <v-flex xs12 sm12 md12 lg12 xl12>
-            <v-btn @click="ocultarNuevo" color="blue darken-1" text>Cancelar</v-btn>
+            <v-btn @click="ocultarNuevo" color="blue darken-1" text
+              >Cancelar Operación</v-btn
+            >
             <v-btn color="success">Guardar</v-btn>
           </v-flex>
-
         </v-layout>
       </v-container>
+
+      <v-dialog v-model="verArticulo" max-width="1000px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Seleccione un artículo</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12 sm12 md12 lg12 xl12>
+                  <v-text-field
+                    append-icon="search"
+                    class="text-xs-center"
+                    v-model="texto"
+                    label="Ingrese artículo a buscar"
+                    @keyup.enter="listarArticulo()"
+                  >
+                  </v-text-field>
+                  <template>
+                    <v-data-table
+                      :headers="cabeceraArticulos"
+                       :items="articulos"
+                      class="elevation-1"
+                    >
+                       <template v-slot:item="props">
+                        <td class="justify-center layout px-0">
+                          <v-icon
+                            small
+                            class="mr-2"
+                            @click="agregaralDetalle(props.item)"
+                          >
+                            add
+                          </v-icon>
+                        </td>
+                        <td>{{ props.item.nombre }}</td>
+                        <td>{{ props.item.categoria }}</td>
+                        <td>{{ props.item.descripcion }}</td>
+                        <td>{{ props.item.stock }}</td>
+                        <td>{{ props.item.precio_venta }}</td>
+                      </template>
+
+                      <template slot="no-data">
+                        <h3>No hay artículos para mostrar.</h3>
+                      </template>
+                    </v-data-table>
+                  </template>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+
+          <v-flex xs12 sm2 md2 lg2 xl2 v-if="errorArticulo">
+            <div class="red--text" v-text="errorArticulo"></div>
+          </v-flex>
+            <v-spacer></v-spacer>
+            <v-btn @click="ocultarArticulos()" color="blue darken" text>
+              Cancelar Detalles
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-flex>
   </v-layout>
 </template>
@@ -192,14 +348,13 @@ export default {
 
     cabeceraDetalles: [
       { text: "Borrar", value: "borrar", soportable: false },
-      { text: "Articulo", value: "articulo", soportable: false },
-      { text: "Cantidad", value: "cantidad", soportable: false },
+      { text: "Articulo", value: "articulo" },
+      { text: "Cantidad", value: "cantidad" },
       { text: "Precio", value: "precio", soportable: false },
       { text: "Subtotal", value: "subtotal", soportable: false },
     ],
-    detalles: [
-      
-    ],
+
+    detalles: [],
     buscar: "",
     editedIndex: -1,
     id: "",
@@ -213,9 +368,20 @@ export default {
     codigo: "",
     verNuevo: 0,
     errorArticulo: null,
-    totalParcial:0,
-    totalImpuesto:0,
-    total:0,
+    totalParcial: 0,
+    totalImpuesto: 0,
+    total: 0,
+    cabeceraArticulos: [
+                    {text: 'Seleccionar', value: 'seleccionar', sortable: false },
+                    { text: 'Artículo', value: 'articulo'},
+                    { text: 'Categoría', value: 'categoria' },
+                    { text: 'Descripción', value: 'descripcion', sortable: false },
+                    { text: 'Stock', value: 'stock', sortable: false  },
+                    { text: 'Precio Venta', value: 'precio_venta', sortable: false  }            
+                ],
+    articulos: [],
+    texto:'',
+    verArticulo: 0,
     valida: 0,
     ValidarMensaje: [],
     adModal: 0,
@@ -225,13 +391,14 @@ export default {
   }),
 
   computed: {
-    calcularTotal:function(){
-      var resultado=0.0;
-      for(var i=0; i<this.detalles.length;i++){
-        resultado = resultado + (this.detalles[i].precio*this.detalles[i].cantidad);
+    calcularTotal: function () {
+      var resultado = 0.0;
+      for (var i = 0; i < this.detalles.length; i++) {
+        resultado =
+          resultado + this.detalles[i].precio * this.detalles[i].cantidad;
       }
       return resultado;
-    }
+    },
   },
 
   created() {
@@ -245,59 +412,76 @@ export default {
     },
     ocultarNuevo() {
       this.verNuevo = 0;
+  
     },
 
     buscarCodigo() {
       let me = this;
-      me.errorArticulo=null;
+      me.errorArticulo = null;
       let header = { Authorization: "Bearer " + this.$store.state.token };
       let configuracion = { headers: header };
       axios
-        .get("api/Articulos/BuscarCodigoIngreso/" + this.codigo,configuracion)
+        .get("api/Articulos/BuscarCodigoIngreso/" + this.codigo, configuracion)
         .then(function (response) {
-          me.agregaralDetalle(response.data);         
+          me.agregaralDetalle(response.data);
         })
         .catch(function (error) {
           console.log(error);
-          me.errorArticulo='No existe el artículo';
+          me.errorArticulo = "No existe el artículo";
         });
     },
-
-    agregaralDetalle(data = []){
-      this.errorArticulo=null;
-      if(this.encuentra(data['idarticulo'])){
-        this.errorArticulo="El artículo ya fue agregado a la lista."
-      }
-      else{
-         this.detalles.push(
-        {idarticulo:data['idarticulo'],
-        articulo:data['nombre'],
-        cantidad:1,
-        precio:1,
-        }
-      );
-
-      }
-     
-
+    listarArticulo() {
+      let me = this;
+      let header = { Authorization: "Bearer " + this.$store.state.token };
+      let configuracion = { headers: header };
+      axios
+        .get("api/Articulos/ListarIngreso/"+me.texto, configuracion)
+        .then(function (response) {
+          //console.log(response);
+          me.articulos = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
-    encuentra(id){
-      var sw=0;
-      for(var i=0;i<this.detalles.length;i++){
-        if(this.detalles[i].idarticulo==id){
-          sw=1;
+    mostrarArticulos() {
+      this.verArticulo = 1;
+    },
+    ocultarArticulos() {
+      this.verArticulo = 0;
+      
+    },
+
+
+
+    agregaralDetalle(data = []) {
+      this.errorArticulo = null;
+      if (this.encuentra(data["idarticulo"])) {
+        this.errorArticulo = "El artículo ya fue agregado a la lista.";
+      } else {
+        this.detalles.push({
+          idarticulo: data["idarticulo"],
+          articulo: data["nombre"],
+          cantidad: 1,
+          precio: 1,
+        });
+      }
+    },
+    encuentra(id) {
+      var sw = 0;
+      for (var i = 0; i < this.detalles.length; i++) {
+        if (this.detalles[i].idarticulo == id) {
+          sw = 1;
         }
       }
       return sw;
-
     },
 
-    eliminarDelDetalle(arr,item){
-      var i= arr.indexOf(item);
-      if(i!==-1){
-        arr.splice(i,1);
+    eliminarDelDetalle(arr, item) {
+      var i = arr.indexOf(item);
+      if (i !== -1) {
+        arr.splice(i, 1);
       }
-
     },
 
     listar() {
@@ -351,17 +535,11 @@ export default {
       this.LimpiarForm();
     },
     LimpiarForm() {
-      this.id = "";
-      this.idrol = "";
+      this.articulo = "";
+      this.categoria = "";
       this.nombre = "";
-      this.tipo_documento = "";
-      this.num_documento = "";
-      this.direccion = "";
-      this.telefono = "";
-      this.email = "";
-      this.password = "";
-      this.passwordAnt = "";
-      this.actPassword = false;
+      this.descripcion = "";
+      this.precio_venta = "";
       this.editedIndex = -1;
     },
     GuardarRegistro() {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ namespace Sistema.Entidades.Almacen
         public int cantidad { get; set; }
         public decimal precio { get; set; }
 
+        [ForeignKey("idingreso")]
         public Ingreso ingreso { get; set; }
     }
 }

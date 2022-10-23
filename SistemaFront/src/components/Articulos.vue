@@ -141,6 +141,7 @@
         </template>
 
         <template v-slot:item="props">
+          
           <tr>
             <td>
               <v-icon small class="mr-2" @click="EditarItem(props.item)"
@@ -176,6 +177,7 @@
               >
             </td>
           </tr>
+
         </template>
 
         <template v-slot:no-data>

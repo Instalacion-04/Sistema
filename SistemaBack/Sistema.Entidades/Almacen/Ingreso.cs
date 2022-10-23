@@ -10,7 +10,8 @@ using Sistema.Entidades.Ventas;
 namespace Sistema.Entidades.Almacen
 {
     public class Ingreso
-    {
+    {   
+        [Key]
         public int idingreso { get; set; }
         [Required]
         public int idproveedor { get; set; }
@@ -34,6 +35,7 @@ namespace Sistema.Entidades.Almacen
 
         [ForeignKey("idusuario ")]
         public Usuario usuario { get; set; }
+        
         public Persona persona { get; set; }
 
     }

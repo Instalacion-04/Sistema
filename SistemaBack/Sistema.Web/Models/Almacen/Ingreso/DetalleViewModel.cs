@@ -14,5 +14,7 @@ namespace Sistema.Web.Models.Almacen.Ingreso
         public int cantidad { get; set; }
         [Required]
         public decimal precio { get; set; }
+
+        public string articulo { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace Sistema.Web.Controllers
 
          /******Listar*******/
         // GET: api/Articulos/Listar
-        //[Authorize(Roles = "Almacenero,Administrador")]
+        [Authorize(Roles = "Almacenero,Administrador")]
         [HttpGet("[action]")]
         public async Task<IEnumerable<IngresoViewModel>> Listar()
         {
@@ -55,9 +55,128 @@ namespace Sistema.Web.Controllers
 
         }
 
+             /******Listar*******/
+        // GET: api/Articulos/ListarFiltro/texto
+        [Authorize(Roles = "Almacenero,Administrador")]
+        [HttpGet("[action]/{texto}")]
+        public async Task<IEnumerable<IngresoViewModel>> ListarFiltro([FromRoute] string texto)
+        {
+            var ingreso = await _context.Ingresos
+            .Include(i => i.usuario)
+            .Include(i => i.persona)
+            .Where(i => i.num_comprobante.Contains(texto))
+            .OrderByDescending(i => i.idingreso)
+            .ToListAsync();
+
+            return ingreso.Select(i => new IngresoViewModel
+            {
+               idingreso = i.idingreso,
+               idproveedor=i.idproveedor,
+               proveedor=i.persona.nombre,
+               idusuario=i.idusuario,
+               usuario=i.usuario.nombre,
+               tipo_comprobante=i.tipo_comprobante,
+               serie_comprobante=i.serie_comprobante,
+               num_comprobante=i.num_comprobante,
+               fecha_hora=i.fecha_hora,
+               impuesto=i.impuesto,
+               total=i.total,
+               estado=i.estado
+            
+            });
+
+        }
+
+
+           /******Listar*******/
+        // GET: api/Articulos/ListarDetalles
+        [Authorize(Roles = "Almacenero,Administrador")]
+        [HttpGet("[action]/{idingreso}")]
+        public async Task<IEnumerable<DetalleViewModel>> ListarDetalles([FromRoute] int idingreso)
+        {
+            var detalle = await _context.DetallesIngresos
+            .Include(a => a.articulo)
+            .Where(d => d.idingreso==idingreso)
+            .ToListAsync();
+
+            return detalle.Select(d => new DetalleViewModel
+            {
+               idarticulo = d.idarticulo,
+               articulo = d.articulo.nombre,
+               cantidad = d.cantidad,
+               precio = d.precio    
+            });
+
+        }
+
+        
+        /*********Desactivar*************/
+        // PUT: api/Categorias/Desactivar/1
+         [Authorize(Roles = "Almacenero,Administrador")]
+        [HttpPut("[action]/{id}")]
+        public async Task<IActionResult> Anular ([FromRoute] int id)
+        {
+
+            if (id <= 0)
+            {
+                return BadRequest();
+            }
+
+            var ingreso= await _context.Ingresos.FirstOrDefaultAsync(c => c.idingreso== id);
+
+            if (ingreso == null)
+            {
+                return NotFound();
+            }
+
+            ingreso.estado = "Anulado";
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                  // Inicio de código para devolver stock
+
+                // 1. Obtenemos los detalles
+
+                var detalle = await _context.DetallesIngresos.Include(a => a.articulo).Where(d => d.idingreso == id).ToListAsync();
+
+                //2. Recorremos los detalles
+
+                foreach (var det in detalle)
+
+                {
+
+                    //Obtenemos el artículo del detalle actual
+
+                    var articulo = await _context.Articulos.FirstOrDefaultAsync(a => a.idarticulo == det.articulo.idarticulo);
+
+                    //actualizamos el stock
+
+                    articulo.stock = det.articulo.stock-det.cantidad;
+
+                    //Guardamos los cambios
+
+                    await _context.SaveChangesAsync();
+
+                }
+
+                // Fin del código para devolver stock
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // Guardar Excepción
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
+
+
+
         
         // POST: api/Ingresos/Crear
-       // [Authorize(Roles = "Almacenero,Administrador")]
+        [Authorize(Roles = "Almacenero,Administrador")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Crear([FromBody] CrearViewModel model)
         {

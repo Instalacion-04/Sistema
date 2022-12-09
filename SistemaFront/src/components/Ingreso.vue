@@ -14,6 +14,14 @@
           single-line
           hide-details
         ></v-text-field>
+        <v-btn
+          v-if="verNuevo == 0"
+          @click="listar()"
+          color="primary"
+          dark
+          class="mb-2"
+          >Buscar</v-btn
+        >
         <v-spacer></v-spacer>
         <v-btn
           v-if="verNuevo == 0"
@@ -85,12 +93,12 @@
               >¿Activar Item?</v-card-title
             >
             <v-card-title class="headline" v-if="adAccion == 2"
-              >¿Desactivar Item?</v-card-title
+              >¿Estas Seguro de Anular el Ingreso?</v-card-title
             >
             <v-card-text>
               Estás a punto de
               <span v-if="adAccion == 1">Activar </span>
-              <span v-if="adAccion == 2">Desactivar </span>
+              <span v-if="adAccion == 2">Anular </span>
               el ítem {{ adNombre }}
             </v-card-text>
             <v-card-actions>
@@ -116,7 +124,7 @@
                 text
                 @click="desactivar"
               >
-                Desactivar
+                Anular
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -133,8 +141,8 @@
         <template v-slot:item="props">
           <tr>
             <td>
-              <v-icon small class="mr-2" @click="EditarItem(props.item)"
-                >edit</v-icon
+              <v-icon small class="mr-2" @click="verDetalles(props.item)"
+                >tab</v-icon
               >
 
               <template v-if="props.item.estado == 'Aceptado'">
@@ -143,11 +151,7 @@
                 >
               </template>
 
-              <template v-else>
-                <v-icon small @click="activarDesactivarMostrar(1, props.item)"
-                  >lock</v-icon
-                >
-              </template>
+              
             </td>
             
             <td>{{ props.item.usuario }}</td>
@@ -294,7 +298,7 @@
             <v-btn @click="ocultarNuevo()" color="blue darken-1" text
               >Cancelar</v-btn
             >
-            <v-btn @click="guardar()" color="success">Guardar</v-btn>
+            <v-btn v-if="verDet==0"  @click="guardar()" color="success">Guardar</v-btn>
           </v-flex>
         </v-layout>
       </v-container>
@@ -362,6 +366,7 @@ export default {
       articulos: [],
       texto: "",
       verArticulos: 0,
+      verDet:0,
       valida: 0,
       validaMensaje: [],
       adModal: 0,
@@ -467,8 +472,16 @@ export default {
       let me = this;
       let header = { Authorization: "Bearer " + this.$store.state.token };
       let configuracion = { headers: header };
+      let url='';
+      if(!me.search){
+        url='api/Ingreso/Listar';
+
+      }else
+      {
+      url='api/Ingreso/ListarFiltro' +me.search;
+      }
       axios
-        .get("api/Ingreso/Listar", configuracion)
+        .get(url, configuracion)
         .then(function (response) {
           //console.log(response);
           me.ingresos = response.data;
@@ -476,6 +489,31 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
+    },
+     listarDetalles(id) {
+      let me = this;
+      let header = { Authorization: "Bearer " + this.$store.state.token };
+      let configuracion = { headers: header };
+      axios
+        .get("api/Ingreso/ListarDetalles/" + id, configuracion)
+        .then(function (response) {
+          //console.log(response);
+          me.detalles = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    verDetalles(item){
+      this.limpiar();
+      this.tipo_comprobante = item.tipo_comprobante;
+      this.serie_comprobante = item.serie_comprobante;
+      this.num_comprobante= item.num_comprobante;
+      this.idproveedor = item.idproveedor;
+      this.impuesto = item.impuesto;
+      this.listarDetalles(item.idingreso);
+      this.verNuevo=1;
+      this.verDet=1;
     },
     select() {
       let me = this;
@@ -506,6 +544,7 @@ export default {
       this.total = 0;
       this.totalImpuesto = 0;
       this.totalParcial = 0;
+      this.verDet=0;
     },
     guardar() {
       if (this.validar()) {
@@ -564,8 +603,8 @@ export default {
     },
     activarDesactivarMostrar(accion, item) {
       this.adModal = 1;
-      this.adNombre = item.nombre;
-      this.adId = item.idusuario;
+      this.adNombre = item.num_comprobante;
+      this.adId = item.idingreso;
       if (accion == 1) {
         this.adAccion = 1;
       } else if (accion == 2) {
@@ -577,6 +616,8 @@ export default {
     activarDesactivarCerrar() {
       this.adModal = 0;
     },
+
+    /*
     activar() {
       let me = this;
       let header = { Authorization: "Bearer " + this.$store.state.token };
@@ -593,13 +634,14 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
-    },
+    }, */
+
     desactivar() {
       let me = this;
       let header = { Authorization: "Bearer " + this.$store.state.token };
       let configuracion = { headers: header };
       axios
-        .put("api/Usuarios/Desactivar/" + this.adId, {}, configuracion)
+        .put("api/Ingreso/Anular/" + this.adId, {}, configuracion)
         .then(function (response) {
           me.adModal = 0;
           me.adAccion = 0;

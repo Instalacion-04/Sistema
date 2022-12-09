@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Sistema.Entidades.Almacen;
+using Sistema.Entidades.Ventas;
 
 namespace Sistema.Entidades.Usuarios
 {
@@ -29,7 +30,12 @@ namespace Sistema.Entidades.Usuarios
         public bool condicion { get; set; }
 
         [ForeignKey("idrol")]
-        public Rol rol { get; set; }
-        public ICollection<Ingreso> ingresos { get; set; }
-    }
+        public Rol rol { get; set; } //* Tablas a las que hace referencia.
+        //* El campo idrol es una llave foranea en esta entidad, la llave proviene de la tabla Rol.
+        public ICollection<Ingreso> ingresos { get; set; } 
+        //*Se pone la collecion de Ingreso debido a que la tabla ingreso esta usando la primary key(idusuario) de esta tabla.
+        //* En la tabla ingreso aparece el campo idusuario como llave foranea
+        public ICollection<Venta> ventas { get; set; }
+    }   //*Se pone la collecion de Venta debido a que la tabla Venta esta usando la primary key(idusuario) de esta tabla.
+        //* En la tabla Venta aparece el campo idusuario como llave foranea
 }

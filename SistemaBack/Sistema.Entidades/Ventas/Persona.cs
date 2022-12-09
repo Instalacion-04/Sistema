@@ -24,5 +24,11 @@ namespace Sistema.Entidades.Ventas
         public string email { get; set; }
 
         public ICollection<Ingreso> ingresos  { get; set; }
+           //*Se pone la collecion de Ingreso debido a que en la entidad ingreso o tabla ingreso, se esta usando la primary key(idpersona) de esta tabla , idpersona es una llave foranea en la entidad ingreso,en vez de poner idpersona se puso idproveedor.
+
+        public ICollection<Venta> ventas  { get; set; }
+        //*Se pone la collecion de Venta debido a que en la entidad Venta o tabla Venta, se esta usando la primary key(idpersona) de esta tabla , idpersona es una llave foranea en la entidad Venta,  en vez de poner idpersona se puso idcliente.
+
     }
 }
+

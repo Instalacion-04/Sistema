@@ -20,5 +20,7 @@ namespace Sistema.Entidades.Almacen
 
         [ForeignKey("idingreso")]
         public Ingreso ingreso { get; set; }
+            [ForeignKey("idarticulo")]
+        public Articulo articulo { get; set; }
     }
 }

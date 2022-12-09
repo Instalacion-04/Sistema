@@ -27,5 +27,6 @@ namespace Sistema.Entidades.Almacen
 
         [ForeignKey("idcategoria")]
         public Categoria categoria { get; set; }
+        public ICollection<DetalleIngreso> DetallesIngresos {get; set;}
     }
 }

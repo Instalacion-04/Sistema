@@ -10,6 +10,7 @@ namespace Sistema.Entidades.Ventas
 {
     public class Venta
     {
+        [Key]
          public int idventa { get; set; } //*Primary Key
         [Required]
         public int idcliente { get; set; } //!Fk hace referencia a tabla persona

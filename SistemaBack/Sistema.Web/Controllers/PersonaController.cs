@@ -67,13 +67,32 @@ namespace Sistema.Web.Controllers
             });
 
         }
+
         // GET: api/Personas/SelectProveedores
-          [Authorize(Roles = "Almacenero,Administrador")]
+        [Authorize(Roles = "Almacenero,Administrador")]
         [HttpGet("[action]")]
         
         public async Task<IEnumerable<SelectViewModel>> SelectProveedores()
         {
             var persona = await _context.Personas.Where(p => p.tipo_persona=="Proveedor"
+            ).ToListAsync();
+
+            return persona.Select(p => new SelectViewModel
+            {
+                idpersona = p.idpersona,
+                nombre = p.nombre
+            });
+
+        }
+
+
+        // GET: api/Personas/SelectClientes
+        [Authorize(Roles = "Vendedor,Administrador")]
+        [HttpGet("[action]")]
+        
+        public async Task<IEnumerable<SelectViewModel>> SelectClientes()
+        {
+            var persona = await _context.Personas.Where(p => p.tipo_persona=="Cliente"
             ).ToListAsync();
 
             return persona.Select(p => new SelectViewModel

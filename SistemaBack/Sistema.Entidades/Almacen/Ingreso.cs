@@ -25,8 +25,10 @@ namespace Sistema.Entidades.Almacen
         [Required]
         public DateTime fecha_hora { get; set; }
         [Required]
+        [Column(TypeName = "decimal(18,4)")]
         public decimal impuesto { get; set; }
         [Required]
+        [Column(TypeName = "decimal(18,4)")]
         public decimal total { get; set; }
         [Required]
         public string estado { get; set; }

@@ -23,9 +23,13 @@ namespace Sistema.Entidades.Ventas
         public string num_comprobante { get; set; }
         [Required]
         public DateTime fecha_hora { get; set; }
+       
         [Required]
+        [Column(TypeName = "decimal(18,4)")]
          public decimal impuesto { get; set; }
+        
         [Required]
+        [Column(TypeName = "decimal(18,4)")]
         public decimal total { get; set; }
         [Required]
         public string estado { get; set; }

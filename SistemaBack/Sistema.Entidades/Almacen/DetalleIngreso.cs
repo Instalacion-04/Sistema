@@ -16,6 +16,8 @@ namespace Sistema.Entidades.Almacen
         public int idarticulo { get; set; }
         [Required]
         public int cantidad { get; set; }
+        
+        [Column(TypeName = "decimal(18,4)")]
         public decimal precio { get; set; }
 
         [ForeignKey("idingreso")]

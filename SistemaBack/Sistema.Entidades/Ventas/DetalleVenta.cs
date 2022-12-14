@@ -19,8 +19,10 @@ namespace Sistema.Entidades.Ventas
         [Required]
         public int cantidad { get; set; }
         [Required]
+        [Column(TypeName = "decimal(18,4)")]
         public decimal precio { get; set; }
         [Required]
+        [Column(TypeName = "decimal(18,4)")]
         public decimal descuento { get; set; }
         
          [ForeignKey("idventa")]

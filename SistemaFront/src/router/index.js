@@ -10,6 +10,7 @@ import Proveedor_Componet from '../components/Proveedor.vue'
 import Login_Component from '../components/Login.vue'
 import Ingreso_Component from '../components/Ingreso.vue'
 import store from '../store'
+import Venta_Component from '../components/Venta.vue'
 
 Vue.use(VueRouter)
 
@@ -92,6 +93,15 @@ const routes = [
     component: Login_Component,
     meta :{
       libre: true
+    }
+  },
+  {
+    path: '/ventas',
+    name: 'ventas',
+    component: Venta_Component,
+    meta :{
+      administrador : true,
+      vendedor : true,
     }
   },
   {

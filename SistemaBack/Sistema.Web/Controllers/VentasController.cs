@@ -39,6 +39,10 @@ namespace Sistema.Web.Controllers
             {
                 idventa = v.idventa,
                 idcliente = v.idcliente,
+                num_documento= v.persona.num_documento,
+                direccion = v.persona.direccion,
+                telefono = v.persona.telefono,
+                email = v.persona.email,
                 cliente = v.persona.nombre,
                 idusuario = v.idusuario,
                 usuario = v.usuario.nombre,
@@ -70,7 +74,12 @@ namespace Sistema.Web.Controllers
             {
                 idventa = v.idventa,
                 idcliente = v.idcliente,
+                
                 cliente = v.persona.nombre,
+                 num_documento= v.persona.num_documento,
+                direccion = v.persona.direccion,
+                telefono = v.persona.telefono,
+                email = v.persona.email,
                 idusuario = v.idusuario,
                 usuario = v.usuario.nombre,
                 tipo_comprobante = v.tipo_comprobante,

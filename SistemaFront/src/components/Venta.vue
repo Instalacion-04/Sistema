@@ -182,7 +182,7 @@
           <tr>
             <td>
               <v-icon small class="mr-2" @click="verDetalles(props.item)">tab</v-icon>
-              <v-icon small class="mr-2" @click="mostrarComprobante(props.item)">print</v-icon>
+              <v-icon small class="mr-2" @click="mostrarComprobate(props.item)">print</v-icon>
 
 
               <template v-if="props.item.estado == 'Aceptado'">
